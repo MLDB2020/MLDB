@@ -7,14 +7,14 @@ function NavBar() {
         <div className='app__navbar'>
             <nav>
                 <ul className='nav__items'>
-                    <li><a href=''><img src={MLDB} alt='logo'/></a></li>
-                    <div className='vl'></div>
+                    <li><img src={MLDB} alt='logo'/></li>
+                    <li><div className='vl'></div></li>
                     <li className='nav__searchbar'>
                         <input type='text' placeholder='Movie Search'></input>
-                        <button>Search</button>
+                        <input id='input' type='submit' value='Search'></input>
                     </li>
-                    <div className='vl'></div>
-                    <li><a href='' onClick=''>Sign in</a></li>
+                    <li><div className='vl'></div></li>
+                    <li className='nav__signin'>Sign In</li>
                 </ul>
             </nav>
         </div>
