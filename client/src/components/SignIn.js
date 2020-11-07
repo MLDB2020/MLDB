@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import Axios from "axios";
+import React, { useState } from "react";
+import axios from "axios";
 import "../styles/SignIn.css";
 import MLDB from "../MLDB.png";
 
 function SignIn() {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const [userList, setUserList] = useState([]);
+    //const [userList, setUserList] = useState([]);
 
     const getUserName = (e) => {
         e.preventDefault();
@@ -20,33 +20,37 @@ function SignIn() {
 
     const login = (e) => {
         e.preventDefault();
-        userList.includes((val) => {
-            (val.userName === userName) 
-            ?
-                alert("User already registered. Please login into account.")
-            :
-                Axios.post("http://localhost:3001/insert", {
-                    userName: userName,
-                    password: password,
-                }).then(() => {
-                    alert("Successful insert");
-                });
-            });
+        axios.post("http://localhost:3001/signin", 
+        {
+            userName: userName,
+            password: password
+        }, 
+        {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                }
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
+        .catch(err => {
+            console.log('Something is wrong');
+            console.log(err);
+        });
     };
-
+/*
     useEffect(() => {
-        Axios.get("http://localhost:3001/get").then((res) => {
+        axios.get("http://localhost:3001/get").then((res) => {
             console.log(res.data);
             setUserList(res.data);
         });
     }, []);
-
+*/
     return (
         <div className="app__signin">
             <img id="img-signin" src={ MLDB } alt="logo"/>
             <div className="signin__container">
                 <h1>Sign-In</h1>
-                <form className="signin__form">
+                <form className="signin__form" onSubmit={login}>
                     <label>Username</label>
                     <input 
                         type="text" 
@@ -63,7 +67,7 @@ function SignIn() {
                     <br/>
                     <button 
                         id="submit"
-                        onClick={ login } 
+                        type='submit' 
                     >Submit</button>
                 </form>
                 <div className="create__account">
