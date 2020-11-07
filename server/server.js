@@ -5,7 +5,7 @@ const knex = require('knex');
 const app = express();
 
 const PORT = 3001 || process.env.PORT;
-const DB_PASSWORD = 'Ninil1985!';
+const DB_PASSWORD = '####';
 
 const db = knex({
     // Enter your own database information here based on what you created
