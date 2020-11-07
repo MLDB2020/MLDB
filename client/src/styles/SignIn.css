@@ -24,7 +24,7 @@ h1 {
     margin-bottom: 30px;
 }
 
-p {
+label {
     font-size: 17px;
     font-weight: 700;
     align-items: flex-start;
@@ -55,6 +55,11 @@ input {
     border-radius: 10px;
     border: 1px solid black;
     box-shadow: 1px 1px 1px green;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    width: 410px;
+    height: 40px;
 }
 
 .create__account {
