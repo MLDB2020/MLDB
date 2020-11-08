@@ -1,0 +1,13 @@
+.select__genre {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    height: 40px;
+    font-size: 17px;
+    width: 255px;
+}
+
+label {
+    font-size: 18px;
+}
