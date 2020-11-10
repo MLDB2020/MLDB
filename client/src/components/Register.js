@@ -111,7 +111,7 @@ function Register() {
     };
 
     return (
-        <div className="app__signin">
+        <div className="app__signin" id="register">
             <img id="img-signin" src={ MLDB } alt="logo"/>
             <div className="signin__container">
                 <h1>Register</h1>

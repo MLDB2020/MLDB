@@ -14,7 +14,10 @@ function NavBar() {
                         <input id='input' type='submit' value='Search'></input>
                     </li>
                     <li><div className='vl'></div></li>
-                    <li className='nav__signin'>Sign In</li>
+                    <div className="signinregister">
+                        <li className='nav__signin'><a href="#signin">Sign In</a></li>
+                        <li className='nav__signin'><a href="#register">Register</a></li>
+                    </div>
                 </ul>
             </nav>
         </div>
