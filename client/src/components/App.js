@@ -3,12 +3,14 @@ import React from 'react';
 import NavBar from './NavBar';
 import '../styles/App.css';
 import SignIn from './SignIn';
+import Register from './Register';
 
 function App() {
   return (
     <div className="App">
         <NavBar />
         <SignIn />
+        <Register />
     </div>
   );
 }
