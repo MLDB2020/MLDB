@@ -40,7 +40,7 @@ function SignIn() {
     };
 
     return (
-        <div className="app__signin">
+        <div className="app__signin" id="signin">
             <img id="img-signin" src={ MLDB } alt="logo"/>
             <div className="signin__container">
                 <h1>Sign-In</h1>
@@ -67,7 +67,7 @@ function SignIn() {
                 <div className="create__account">
                     <hr/>
                     <h3>New to MLDB?</h3>
-                    <button>Create an Account</button>
+                    <button><a id="create_account" href="#register">Create an Account</a></button>
                 </div>
             </div>
         </div>

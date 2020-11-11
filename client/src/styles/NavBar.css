@@ -76,4 +76,22 @@ img {
     color: white;
 }
 
+.signinregister {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.signinregister > li {
+    margin-left: 20px;
+}
+
+.nav__signin > a {
+    text-decoration: none;
+    color: black;
+}
+
+
+
 
