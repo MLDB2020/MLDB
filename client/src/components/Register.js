@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/Register.css";
-import MLDB from "../MLDB.png";
+import "../styles/SignInRegister.css";
+import MLDB_logo from "../MLDB_logo.png";
 
 function Register() {
-    const [userID, setUserID] = useState(0);
+    const [userID, setUserID] = useState(1);
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
@@ -65,8 +65,12 @@ function Register() {
         async function getUsedID() {
             const response = await axios("http://localhost:3001/get");
             const data = response.data;
-            const userID = data[data.length-1].userID + 1;
-            setUserID(userID);
+            if (data.length === 0) {
+                setUserID(1);
+            } else {
+                const userID = data[data.length-1].userID + 1;
+                setUserID(userID);
+            }
         }
         getUsedID();
     }, []);
@@ -103,7 +107,6 @@ function Register() {
             }
             res.text();
         })
-        .then(text => console.log(text))
         .catch(err => {
             console.log('Something is wrong');
             console.log(err);
@@ -112,7 +115,7 @@ function Register() {
 
     return (
         <div className="app__signin" id="register">
-            <img id="img-signin" src={ MLDB } alt="logo"/>
+            <img id="img-signin" src={ MLDB_logo } alt="logo"/>
             <div className="signin__container">
                 <h1>Register</h1>
                 <form className="signin__form" onSubmit={ onSubmitRegister }>
@@ -176,7 +179,7 @@ function Register() {
                         name="zipCode" 
                         onChange={ onZipCodeChange }
                     />
-                    <label>Preferable Genre: </label>
+                    <label id="genre">Preferable Genre: </label>
                     <select 
                         className="select__genre"
                         name="preferableGenre"

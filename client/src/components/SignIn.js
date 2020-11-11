@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../styles/SignIn.css";
-import MLDB from "../MLDB.png";
+import "../styles/SignInRegister.css";
+import MLDB_logo from "../MLDB_logo.png";
 
 function SignIn() {
     const [userName, setUserName] = useState("");
@@ -41,7 +41,7 @@ function SignIn() {
 
     return (
         <div className="app__signin" id="signin">
-            <img id="img-signin" src={ MLDB } alt="logo"/>
+            <img id="img-signin" src={ MLDB_logo } alt="logo"/>
             <div className="signin__container">
                 <h1>Sign-In</h1>
                 <form className="signin__form" onSubmit={ onSubmitSignIn }>
@@ -67,7 +67,7 @@ function SignIn() {
                 <div className="create__account">
                     <hr/>
                     <h3>New to MLDB?</h3>
-                    <button><a id="create_account" href="#register">Create an Account</a></button>
+                    <button><a href="/register">Create an Account</a></button>
                 </div>
             </div>
         </div>
