@@ -6,12 +6,12 @@ const knex = require('knex');
 const PORT = 3001 || process.env.PORT;
 
 const db = knex({
-    // Enter your own database information here based on what you created
+    // Enter your own database information here based on what you created and run the SQL_Statements to create the tables
     client: 'mysql',
     connection: {
-      host : 'localhost',
-      user : 'root',
-      password : 'PasswordMLDB',
+      host : 'localhost',           // Your hostname
+      user : 'root',                // Your user name
+      password : 'PasswordMLDB',    // Your password
       database : 'mldb'
     }
 });
