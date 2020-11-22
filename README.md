@@ -1,4 +1,4 @@
-MLDB - Movie Library Database
+<h1>MLDB - Movie Library Database</h1>
 
 MLDB is a web application where anyone can search for movies based on their preferences, and also purchase tickets to watch them in the Movie Theater.
 
