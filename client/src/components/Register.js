@@ -1,212 +1,204 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/SignInRegister.css";
-import MLDB_logo from "../MLDB_logo.png";
+import validator from 'validator';
 
 function Register() {
     const [userID, setUserID] = useState(1);
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
-    const [street, setStreet] = useState("");
-    const [city, setCity] = useState("");
-    const [state, setStat] = useState("");
-    const [zipCode, setZipCode] = useState("");
-    const [preferableGenre, setGenre] = useState("");
-    
-    const onUserNameChange = (e) => {
-        setUserName(e.target.value);
-    };
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const [firstNameError, setFirstNameError] = useState(null);
+    const [lastNameError, setLastNameError] = useState(null);
+    const [emailError, setEmailError] = useState(null);
+    const [userNameError, setUserNameError] = useState(null);
+    const [passwordError, setPasswordError] = useState(null);
 
-    const onPasswordChange = (e) => {
-        setPassword(e.target.value);
-    };
-
-    const onFirstNameChange = (e) => {
-        setFirstName(e.target.value);
-    };
-
-    const onLastNameChange = (e) => {
-        setLastName(e.target.value);
-    };
-
-    const onEmailChange = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const onPhoneChange = (e) => {
-        setPhone(e.target.value);
-    };
-
-    const onStreetChange = (e) => {
-        setStreet(e.target.value);
-    };
-
-    const onCityChange = (e) => {
-        setCity(e.target.value);
-    };
-
-    const onStateChange = (e) => {
-        setStat(e.target.value);
-    };
-
-    const onZipCodeChange = (e) => {
-        setZipCode(e.target.value);
-    };
-
-    const onGenreChange = (e) => {
-        setGenre(e.target.value);
+    const getUserID = async () => {
+        const response = await axios("http://localhost:3001/get");
+        const data = await response.data;
+        if (data.length === 0) {
+            setUserID(1);
+        } else {
+            let userID = data[data.length-1].userID + 1;
+            setUserID(userID);
+        }
     };
 
     useEffect(() => {
-        async function getUsedID() {
-            const response = await axios("http://localhost:3001/get");
-            const data = response.data;
-            if (data.length === 0) {
-                setUserID(1);
-            } else {
-                const userID = data[data.length-1].userID + 1;
-                setUserID(userID);
-            }
-        }
-        getUsedID();
+        getUserID();
     }, []);
 
-    const onSubmitRegister = (e) => {
+    const onFirstNameChange = (e) => {
+        const { value } = e.target;
+        setFirstName(value);
+        setFirstNameError(null);
+    }
+
+    const onLastNameChange = (e) => {
+        const { value } = e.target;
+        setLastName(value);
+        setLastNameError(null);
+    }
+
+    const onEmailChange = (e) => {
+        const { value } = e.target;
+        setEmail(value);
+        setEmailError(null);
+    }
+
+    const onUserNameChange = (e) => {
+        const { value } = e.target;
+        setUserName(value);
+        setUserNameError(null);
+    }
+
+    const onPasswordChange = (e) => {
+        const { value } = e.target;
+        setPassword(value);
+        setPasswordError(null);
+    }
+ 
+    const validate = () => {
+        let firstNameError = firstName.length < 3 ?
+            "minimum 3 characters required" : null;
+        let lastNameError = lastName.length < 3 ?
+            "minimum 3 characters required" : null;
+        let emailError = validator.isEmail(email) ? 
+            null : "invalid email address";
+        let userNameError = userName.length < 3 ?
+            "minimum 3 characters required" : null;
+        let passwordError = password.length < 6 ?
+            "minimum 6 characters required" : null;
+        
+        if (firstNameError || lastNameError || emailError || userNameError || passwordError) {
+            setFirstNameError(firstNameError);
+            setLastNameError(lastNameError);
+            setEmailError(emailError);
+            setUserNameError(userNameError);
+            setPasswordError(passwordError);
+            return false;
+        }
+        return true;
+    }
+
+    const onHandleSubmit = (e) => {
         e.preventDefault();
-        fetch("http://localhost:3001/register", {
-            method: 'post',
-            headers: {'Content-Type': 'application/json; charset=utf-8'},
-            body: JSON.stringify({
-                userID: userID,
-                userName: userName,
-                password: password,
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                phone: phone,
-                street: street,
-                city: city,
-                state: state,
-                zipCode: zipCode,
-                preferableGenre: preferableGenre
-            }), 
-        })
-        .then(res => {
-            console.log(res)
-            if (res.status === 400) {
-                alert('Unable to register!');
-            } else if (res.status === 500) {
-                alert('User or email already registered. Please try again.')
-            } else {
-                alert('User registered!');
-                e.target.reset();
-            }
-            res.text();
-        })
-        .catch(err => {
-            console.log('Something is wrong');
-            console.log(err);
-        });
+        const isValid = validate();
+        if (isValid) {
+            console.log("--- SUBMITTING FORM ---",
+                        "\nfirstName: " + firstName, 
+                        "\nlastName: " + lastName,
+                        "\nemail: " + email,
+                        "\nuserName: " + userName,
+                        "\npassword: xxxxxx",
+                        "\nfirstNameError: " + firstNameError, 
+                        "\nlastNameError: " + lastNameError,
+                        "\nemailError: " + emailError,
+                        "\nuserNameError: " + userNameError,
+                        "\npasswordError: " + passwordError);
+            fetch("http://localhost:3001/register", {
+                method: 'post',
+                headers: {'Content-Type': 'application/json; charset=utf-8'},
+                body: JSON.stringify({
+                    userID: userID,
+                    userName: userName,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                }), 
+            })
+            .then(res => {
+                console.log(res)
+                if (res.status === 400) {
+                    alert('Unable to register!');
+                } else if (res.status === 500) {
+                    alert('User or Email already registered. Please try again.')
+                    e.target.reset();
+                } else {
+                    alert('User registered!');
+                    e.target.reset();
+                }
+                res.text();
+            })
+            .catch(err => {
+                console.log('Something is wrong');
+                console.log(err);
+            });
+            setFirstName("");
+            setLastName("");
+            setEmail("");
+            setUserName("");
+            setPassword("");
+        } else {
+            console.log("### SOMETHING IS WRONG ###",
+                        "\nfirstName: " + firstName, 
+                        "\nlastName: " + lastName,
+                        "\nemail: " + email,
+                        "\nuserName: " + userName,
+                        "\npassword: xxxxxx",
+                        "\nfirstNameError: " + firstNameError, 
+                        "\nlastNameError: " + lastNameError,
+                        "\nemailError: " + emailError,
+                        "\nuserNameError: " + userNameError,
+                        "\npasswordError: " + passwordError);
+        }
     };
 
     return (
-        <div className="app__signin" id="register">
-            <img id="img-signin" src={ MLDB_logo } alt="logo"/>
-            <div className="signin__container">
-                <h1>Register</h1>
-                <form className="signin__form" onSubmit={ onSubmitRegister }>
-                    <label>Username</label>
-                    <input 
-                        type="text" 
-                        name="password" 
-                        onChange={ onUserNameChange }
-                    />
-                    <label>Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        onChange={ onPasswordChange }
-                    />
-                    <label>FirstName</label>
-                    <input 
-                        type="text" 
-                        name="firstName" 
-                        onChange={ onFirstNameChange }
-                    />
-                    <label>LastName</label>
-                    <input 
-                        type="text" 
-                        name="lastName" 
-                        onChange={ onLastNameChange }
-                    />
-                    <label>Email</label>
-                    <input 
-                        type="text" 
-                        name="email" 
-                        onChange={ onEmailChange }
-                    />
-                    <label>Phone</label>
-                    <input 
-                        type="text" 
-                        name="phone" 
-                        onChange={ onPhoneChange }
-                    />
-                    <label>Street</label>
-                    <input 
-                        type="text" 
-                        name="street" 
-                        onChange={ onStreetChange }
-                    />
-                    <label>City</label>
-                    <input 
-                        type="text" 
-                        name="city" 
-                        onChange={ onCityChange }
-                    />
-                    <label>State</label>
-                    <input 
-                        type="text" 
-                        name="state" 
-                        onChange={ onStateChange }
-                    />
-                    <label>ZipCode</label>
-                    <input 
-                        type="text" 
-                        name="zipCode" 
-                        onChange={ onZipCodeChange }
-                    />
-                    <label id="genre">Preferable Genre: </label>
-                    <select 
-                        className="select__genre"
-                        name="preferableGenre"
-                        onChange={ onGenreChange }
-                    >
-                        <option></option>
-                        <option>Horror</option>
-                        <option>Action</option>
-                        <option>Drama</option>
-                        <option>Science Fiction</option>
-                        <option>Romance</option>
-                        <option>Comedy</option>
-                        <option>Western</option>
-                        <option>Thriller</option>
-                        <option>Animation</option>
-                        <option>Adventure</option>
-                        <option>Musical</option>
-                        <option>Crime</option>
-                        <option>Historical</option>
-                        <option>Fantasy</option>
-                    </select>
-                    <br/>
-                    <button 
-                        id="submit"
-                        type='submit' 
-                    >Submit</button>
-                </form>
+        <div>
+            <div className="signinreg__container">
+                <div className="signinreg__form__container">
+                    <h1>Sign Up</h1>
+                    <form className="signinreg__form" onSubmit={ onHandleSubmit }>
+                        <input 
+                            className={ firstNameError === null ? "" : "signinreg__error" }
+                            type="text" 
+                            name="firstName"
+                            placeholder="Firstname" 
+                            onChange={ onFirstNameChange }
+                        />
+                        <span>{ firstNameError }</span>
+                        <input 
+                            className={ lastNameError === null ? "" : "signinreg__error" }
+                            type="text" 
+                            name="lastName"
+                            placeholder="Lastname" 
+                            onChange={ onLastNameChange }
+                        />
+                        <span>{ lastNameError }</span>
+                        <input 
+                            className={ emailError === null ? "" : "signinreg__error" }
+                            type="text" 
+                            name="email"
+                            placeholder="Email"
+                            onChange={ onEmailChange }
+                        />
+                        <span>{ emailError }</span>
+                        <input 
+                            className={ userNameError === null ? "" : "signinreg__error" }
+                            type="text" 
+                            name="userName"
+                            placeholder="Username" 
+                            onChange={ onUserNameChange }
+                        />
+                        <span>{ userNameError }</span>
+                        <input 
+                            className={ passwordError === null ? "" : "signinreg__error" }
+                            type="password" 
+                            name="password"
+                            placeholder="Password"
+                            onChange={ onPasswordChange }
+                        />
+                        <span>{ passwordError }</span>
+                        <button 
+                            className="signinreg__submit"
+                            type='submit' 
+                        >Sign Up</button>
+                    </form>
+                </div>
             </div>
         </div>
     );
