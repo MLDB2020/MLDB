@@ -37,15 +37,20 @@ app.post("/signin", (req, res) => {
                 try {
                     const user = await db.select('*').from('user')
                         .where('userName', '=', userName);
+                    console.log(`${userName} logged in.`)
                     return res.json(user[0]);
                 } catch (err) {
-                    return res.status(400).json('Unable to get user');
+                    console.log(err);
                 }
             } else {
-                res.status(400).json('Wrong credentials.Try again.');
+                console.log("Wrong credentials. Try again.")
+                res.status(400).json("Wrong credentials. Try again.");
             }
         })
-        .catch(err => res.status(400).json('Something is wrong'));
+        .catch(err => {
+            console.log("Username does not exist.");
+            res.status(400).json("Username does not exist.");
+        });
 });
 
 app.post("/register", async (req, res) => {
@@ -56,50 +61,45 @@ app.post("/register", async (req, res) => {
         firstName,
         lastName,
         email,
-        phone,
-        street,
-        city,
-        state,
-        zipCode,
-        preferableGenre
     } = req.body;
-
     db.select('userName').from('user')
     .where('userName', '=', userName)
+    .orWhere('email', '=', email)
     .then(async data => {
-        const userAlreadyExist = data[0].userName === userName;
-        if (userAlreadyExist) {
+        let userAlreadyExist = false;
+        let emailAlreadyExist = false;
+        if (data.length > 0) {
+            userAlreadyExist = data[0].userName === userName;
+            emailAlreadyExist = data[0].email === email;
+        }
+        if (userAlreadyExist || emailAlreadyExist) {
             try {
-                return res.status(500).json('User already exists. Please try another username.');
+                console.log("User/Email already exists.");
+                return res.status(500).json("User/Email already exists.");
             } catch (err) {
                 console.log(err);
             }
-        }    
-    });
-
-    await db.insert(
-        {
-            userID: userID,
-            userName: userName,
-            password: password,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            phone: phone,
-            street: street,
-            city: city,
-            state: state,
-            zipCode: zipCode,
-            preferableGenre: preferableGenre
+        } else {
+            await db.insert(
+                {
+                    userID: userID,
+                    userName: userName,
+                    password: password,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                }
+            )
+            .into('user')
+            .then(user => {
+                res.json(user);
+                console.log("User registered successfully.");
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(400).json('Unable to register');
+            });
         }
-    )
-    .into('user')
-    .then(user => {
-        res.json(user);
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(400).json('Unable to register');
     });
 });
 
