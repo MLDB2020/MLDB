@@ -6,6 +6,7 @@ import Register from './Register';
 import NavBar from './NavBar';
 import Footer from './Footer';
 import Movies from './Movies';
+import MovieInfo from './MovieInfo';
 
 const API_Key = process.env.REACT_APP_TMDB_API_KEY;
 const API_NowPlaying = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_Key}&language=en-US`;
@@ -90,9 +91,10 @@ function App() {
           <Route exact path="/register">
             <Register />
           </Route>
+            <Route path="/:id" component={MovieInfo}></Route>
         </Switch>
       </Router>
-      <Footer />
+      <Footer/>
     </div>
   );
 };

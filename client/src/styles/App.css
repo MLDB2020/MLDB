@@ -440,3 +440,68 @@ FOOTER
     font-size: 25px;
     color: whitesmoke;
 }
+
+
+/* 
+=======
+MovieInfo
+=======
+*/
+
+
+.posterdiv
+{
+    flex: 1;
+    width: 100px;
+    padding-bottom: 5px;
+    border-radius: 10px;
+}
+
+.movieOverview
+{
+    display: flex;
+    flex: 1;
+    background-color: rgb(131, 226, 236);
+    justify-content: right ;
+    justify-items: right;
+    text-align: center;
+    flex-direction: row;
+    padding: 2%;
+
+}
+
+.infoContainer
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-betweence ;
+    
+}
+
+.infoimg
+{
+    width: 100%;
+}
+
+.videowrapper
+{
+flex: 1;
+height: 100vh;
+padding: 2%;
+margin-top: 5%;
+}
+
+.video
+{
+    width: 100%;
+    height: 100%;
+}
+.text
+{
+    text-align: center;
+    flex: 3;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10%;
+    padding: 2%;
+}
