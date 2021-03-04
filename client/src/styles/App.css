@@ -30,7 +30,7 @@ NAVIGATION BAR
 .navbar__items {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     list-style-type: none;
 }
  
@@ -41,15 +41,18 @@ NAVIGATION BAR
     height: 120px;
 }
 
+.navbar__items ul button,
 .navbar__items ul a {
     text-decoration: none;
     color: whitesmoke;
 }
 
+.navbar__items ul button:hover,
 .navbar__items ul a:hover {
     color: rgb(24, 109, 221);
 }
 
+.navbar__items ul button:active,
 .navbar__items ul a:active {
     position: relative;
     top: 1px;
@@ -57,10 +60,9 @@ NAVIGATION BAR
 
 .navbar__items ul {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    justify-content:space-around;
     list-style-type: none;
-    width: 20%;
+    width: 30%;
 }
 
 .navbar__items li {
@@ -72,7 +74,7 @@ NAVIGATION BAR
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 60%;
+    width: 30%;
 }
 
 .navbar__moviesearch {
@@ -237,7 +239,7 @@ HOME PAGE - Component = { MovieCard }
     left: 25%;
     top: 25%;
     width: 40%;
-    height: 55%;
+    height: 60%;
     opacity: 90%;
     transition: 1s ease-in-out;
 }
@@ -289,27 +291,29 @@ SIGN IN / REGISTER
 */
 
 .signinreg__container {
-    overflow: hidden;
-    margin-top: 80px;
-    margin-bottom: 80px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
+    display: none;
+    position: fixed;
+    z-index: 1;
+    opacity: 90%;
+    left: 28%;
+    top: 2%;
+    transition: display 1s ease-in-out;
+    justify-self: center;
     align-items: center;
-}
-
-.signinreg__logo {
-    width: 170px;
-    height: 100px;
-    margin-bottom: 30px;
+    background-color: rgb(44, 65, 139);
+    border-radius: 5px;
 }
 
 .signinreg__form__container {
     width: 500px;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
     border: 5px solid whitesmoke;
     padding: 40px;
-    margin: 20px 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 10px 10px;
 }
 
 .signinreg__form {
@@ -331,7 +335,7 @@ SIGN IN / REGISTER
 
 .signinreg__form input {
     margin-top: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     padding: 5px;
     width: 410px;
     border-radius: 5px;
@@ -361,6 +365,7 @@ SIGN IN / REGISTER
     padding: 5px;
     width: 410px;
     height: 40px;
+    border: 0;
 }
 
 .signinreg__submit:hover {
@@ -439,69 +444,4 @@ FOOTER
     text-align: center;
     font-size: 25px;
     color: whitesmoke;
-}
-
-
-/* 
-=======
-MovieInfo
-=======
-*/
-
-
-.posterdiv
-{
-    flex: 1;
-    width: 100px;
-    padding-bottom: 5px;
-    border-radius: 10px;
-}
-
-.movieOverview
-{
-    display: flex;
-    flex: 1;
-    background-color: rgb(131, 226, 236);
-    justify-content: right ;
-    justify-items: right;
-    text-align: center;
-    flex-direction: row;
-    padding: 2%;
-
-}
-
-.infoContainer
-{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-betweence ;
-    
-}
-
-.infoimg
-{
-    width: 100%;
-}
-
-.videowrapper
-{
-flex: 1;
-height: 100vh;
-padding: 2%;
-margin-top: 5%;
-}
-
-.video
-{
-    width: 100%;
-    height: 100%;
-}
-.text
-{
-    text-align: center;
-    flex: 3;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10%;
-    padding: 2%;
 }

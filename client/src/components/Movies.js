@@ -3,7 +3,7 @@ import MovieCard from './MovieCard';
 
 function Movies({ movies, videos }) {
 	return (
-		<div>
+		<div id="movies">
 			<h2 className="movies__header">🎬 Movies</h2>
 			<div className="movies__container">
 				{ movies.length > 0 && movies.map(movie => {

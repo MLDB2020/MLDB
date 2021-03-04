@@ -105,6 +105,42 @@ app.post("/register", async (req, res) => {
 	});
 });
 
+app.put("/edit", async (req, res) => {
+	const {  
+		userName,
+		firstName,
+		lastName,
+		street,
+		city,
+		state,
+		zip
+	} = req.body;
+	db.select('userName').from('user')
+	.where('userName', '=', userName)
+	.then(async data => {
+		if (data.length > 0) {
+			await db('user').where('userName', '=', userName).update({
+				firstName: firstName,
+				lastName: lastName,
+				street: street,
+				city: city,
+				state: state,
+				zipCode: zip
+			})
+			.then(user => {
+				res.json(user);
+				console.log(`${userName} information edited.`);
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(400).json('Unable to edit information');
+			})
+		} else {
+			console.log("User not found");
+		}
+	})
+});
+
 app.listen(PORT, () => {
 	console.log(`App running on port ${PORT}`);
 });
