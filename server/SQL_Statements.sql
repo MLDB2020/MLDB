@@ -65,13 +65,13 @@ CREATE TABLE ticket (
   CONSTRAINT moviesPlayingID_fk_tk FOREIGN KEY (moviesPlayingID) REFERENCES plays (moviesPlayingID)
 );
 
-CREATE TABLE feedback (
-  feedbackID int NOT NULL,
-  userID int NOT NULL,
-  feedbackGiven varchar(256) DEFAULT NULL,
-  PRIMARY KEY (feedbackID),
-  KEY userID_fk_fb_idx (userID),
-  CONSTRAINT userID_fk_fb FOREIGN KEY (userID) REFERENCES user (userID)
+CREATE TABLE support (
+  supportID int NOT NULL,
+  firstName varchar(64) NOT NULL,
+  lastName varchar(256) NOT NULL,
+  email varchar(64) NOT NULL,
+  message varchar(256) DEFAULT NULL,
+  PRIMARY KEY (supportID)
 );
 
 CREATE TABLE ticket_order (

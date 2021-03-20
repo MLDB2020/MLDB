@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const knex = require('knex');
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
 
 const PORT = 3001 || process.env.PORT;
 
@@ -22,18 +22,32 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/get', (req, res) => {
+// ========================== ROUTES ============================== //
+
+// GET USER DATA INFORMATION
+app.get('/getuser', (req, res) => {
    db.select('*').from('user').then(data => {
 	   res.send(data);
    });
 });
 
+
+// GET FEEDBACK DATA INFORMATION
+app.get('/getfeedback', (req, res) => {
+	db.select('*').from('feedback').then(data => {
+		res.send(data);
+	});
+});
+
+
+// USER SIGN-IN
 app.post("/signin", (req, res) => {
 	const { userName, password } = req.body;
 	db.select('userName', 'password').from('user')
 		.where('userName', '=', userName)
 		.then(async data => {
-			const isValid = bcrypt.compareSync(req.body.password, data[0].password);
+			//const isValid = bcrypt.compareSync(password, data[0].password);
+			const isValid = password === data[0].password;
 			if (isValid) {
 				try {
 					const user = await db.select('*').from('user')
@@ -54,6 +68,8 @@ app.post("/signin", (req, res) => {
 		});
 });
 
+
+// REGISTER USER
 app.post("/register", async (req, res) => {
 	const { 
 		userID,
@@ -63,7 +79,7 @@ app.post("/register", async (req, res) => {
 		lastName,
 		email,
 	} = req.body;
-	const hashPassword = bcrypt.hashSync(password, 10);
+	//const hashPassword = bcrypt.hashSync(password, 10);
 	db.select('userName').from('user')
 	.where('userName', '=', userName)
 	.orWhere('email', '=', email)
@@ -86,7 +102,7 @@ app.post("/register", async (req, res) => {
 				{
 					userID: userID,
 					userName: userName,
-					password: hashPassword,
+					password: password,
 					firstName: firstName,
 					lastName: lastName,
 					email: email,
@@ -105,11 +121,44 @@ app.post("/register", async (req, res) => {
 	});
 });
 
+
+// SUPPORT / FEEDBACK PAGE
+app.post("/support", async (req, res) => {
+	const { 
+		supportID,
+		firstName,
+		lastName,
+		email,
+		message
+	} = req.body;
+	db.insert(
+		{
+			supportID: supportID,
+			firstName: firstName,
+			lastName: lastName,
+			email: email,
+			message: message
+		}
+	)
+	.into('support')
+	.then(data => {
+		res.json(data);
+		console.log("Message received by our Customer Support.");
+	})
+	.catch(err => {
+		console.log(err);
+		res.status(400).json('Something is wrong.');
+	});
+});
+
+
+// EDIT INFORMATION
 app.put("/edit", async (req, res) => {
 	const {  
 		userName,
 		firstName,
 		lastName,
+		password,
 		street,
 		city,
 		state,
@@ -122,6 +171,7 @@ app.put("/edit", async (req, res) => {
 			await db('user').where('userName', '=', userName).update({
 				firstName: firstName,
 				lastName: lastName,
+				password: password,
 				street: street,
 				city: city,
 				state: state,
