@@ -33,8 +33,8 @@ app.get('/getuser', (req, res) => {
 
 
 // GET FEEDBACK DATA INFORMATION
-app.get('/getfeedback', (req, res) => {
-	db.select('*').from('feedback').then(data => {
+app.get('/getsupport', (req, res) => {
+	db.select('*').from('support').then(data => {
 		res.send(data);
 	});
 });
