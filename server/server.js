@@ -72,7 +72,6 @@ app.post("/signin", (req, res) => {
 // REGISTER USER
 app.post("/register", async (req, res) => {
 	const { 
-		userID,
 		userName, 
 		password,
 		firstName,
@@ -100,7 +99,6 @@ app.post("/register", async (req, res) => {
 		} else {
 			await db.insert(
 				{
-					userID: userID,
 					userName: userName,
 					password: password,
 					firstName: firstName,
@@ -125,7 +123,6 @@ app.post("/register", async (req, res) => {
 // SUPPORT / FEEDBACK PAGE
 app.post("/support", async (req, res) => {
 	const { 
-		supportID,
 		firstName,
 		lastName,
 		email,
@@ -133,7 +130,6 @@ app.post("/support", async (req, res) => {
 	} = req.body;
 	db.insert(
 		{
-			supportID: supportID,
 			firstName: firstName,
 			lastName: lastName,
 			email: email,

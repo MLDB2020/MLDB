@@ -284,6 +284,12 @@ HOME PAGE - Component = { MovieCard }
     margin-bottom: 5px;
 }
 
+.movies__tickets, 
+.movies__tickets:hover {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
 /* 
 ===============
 SIGN IN / REGISTER
@@ -437,6 +443,10 @@ FOOTER
     padding: 20px;
     background-color: rgb(44, 65, 139);
     opacity: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 
 .footer__container p {
@@ -445,3 +455,38 @@ FOOTER
     font-size: 25px;
     color: whitesmoke;
 }
+
+.footer__container button {
+    background-color: rgb(44, 65, 139);
+    color: white;
+    font-size: 21px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding: 10px;
+    height: 60px;
+    width: 50%;
+}
+
+.footer__container button:hover {
+    background-color: rgb(2, 33, 78);
+}
+
+.footer__container button:active {
+    position: relative;
+    top: 1px;
+}
+
+.signinreg__form textarea {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px;
+    width: 410px;
+    border-radius: 5px;
+    height: 120px;
+    font-size: 20px;
+    resize: none;
+}
+

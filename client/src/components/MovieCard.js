@@ -41,6 +41,11 @@ const MovieCard = ({ id, title, poster_path, vote_average, overview }) => {
 				<h4>Overview:</h4>
 				<p> { overview } </p>
 				<button onClick={ openModal }>Trailer</button>
+				<button>
+					<a className="movies__tickets" href={"https://www.amctheatres.com/search?q="+ title} target="_blank" rel="noreferrer">
+						Tickets
+					</a>
+				</button>
 			</div>
 
 			<div style={{display: display}} className="movies__modal">
