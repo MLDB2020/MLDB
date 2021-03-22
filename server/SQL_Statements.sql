@@ -3,7 +3,7 @@ CREATE SCHEMA mldb;
 USE mldb;
 
 CREATE TABLE user (
-  userID int NOT NULL,
+  userID int NOT NULL AUTO_INCREMENT,
   userName varchar(64) NOT NULL,
   password varchar(64) NOT NULL,
   firstName varchar(64) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE user (
   street varchar(256) NULL,
   city varchar(64) NULL,
   state varchar(64) NULL,
-  zipCode int NULL,
+  zipCode varchar(10) NULL,
   preferableGenre varchar(256) DEFAULT NULL,
   PRIMARY KEY (userID),
   UNIQUE KEY userName_UNIQUE (userName),
@@ -20,7 +20,7 @@ CREATE TABLE user (
 );
 
 CREATE TABLE movie (
-  movieID int NOT NULL,
+  movieID int NOT NULL AUTO_INCREMENT,
   userID int NOT NULL,
   movieType varchar(64) NOT NULL,
   description varchar(256) NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE movie (
 );
 
 CREATE TABLE movie_theater (
-  movieTheaterID int NOT NULL,
+  movieTheaterID int NOT NULL AUTO_INCREMENT,
   storeName varchar(256) NOT NULL,
   street varchar(256) NOT NULL,
   city varchar(64) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE movie_theater (
 );
 
 CREATE TABLE plays (
-  moviesPlayingID int NOT NULL,
+  moviesPlayingID int NOT NULL AUTO_INCREMENT,
   movieID int DEFAULT NULL,
   movieTheaterID int DEFAULT NULL,
   PRIMARY KEY (moviesPlayingID),
@@ -53,7 +53,7 @@ CREATE TABLE plays (
 );
 
 CREATE TABLE ticket (
-  ticketID int NOT NULL,
+  ticketID int NOT NULL AUTO_INCREMENT,
   userID int NOT NULL,
   moviesPlayingID int NOT NULL,
   paymentAmount double NOT NULL,
@@ -65,17 +65,17 @@ CREATE TABLE ticket (
   CONSTRAINT moviesPlayingID_fk_tk FOREIGN KEY (moviesPlayingID) REFERENCES plays (moviesPlayingID)
 );
 
-CREATE TABLE feedback (
-  feedbackID int NOT NULL,
-  userID int NOT NULL,
-  feedbackGiven varchar(256) DEFAULT NULL,
-  PRIMARY KEY (feedbackID),
-  KEY userID_fk_fb_idx (userID),
-  CONSTRAINT userID_fk_fb FOREIGN KEY (userID) REFERENCES user (userID)
+CREATE TABLE support (
+  supportID int NOT NULL AUTO_INCREMENT,
+  firstName varchar(64) NOT NULL,
+  lastName varchar(256) NOT NULL,
+  email varchar(64) NOT NULL,
+  message varchar(256) DEFAULT NULL,
+  PRIMARY KEY (supportID)
 );
 
 CREATE TABLE ticket_order (
-  orderID int NOT NULL,
+  orderID int NOT NULL AUTO_INCREMENT,
   userID int NOT NULL,
   ticketID int NOT NULL,
   paymentAmount double NOT NULL,

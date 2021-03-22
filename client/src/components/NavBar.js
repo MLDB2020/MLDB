@@ -1,5 +1,5 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+// import axios from "axios";
+import React, { useState } from "react";
 import validator from 'validator';
 import MLDB_logo from '../MLDB_logo.png';
 
@@ -59,7 +59,7 @@ function NavBar({ onSearch }) {
 					street: data.street,
 					city: data.city,
 					state: data.state,
-					zip: data.zip
+					zip: data.zipCode
 				})
 				setIsSignedIn(true);
 				e.target.reset();
@@ -105,7 +105,7 @@ function NavBar({ onSearch }) {
 
 
 	/* HANDLING REGISTER */
-	const [ userID, setUserID ] = useState(1);
+	// const [ userID, setUserID ] = useState(1);
 	const [ register, setRegister ] = useState({
 		firstName: "",
 		lastName: "",
@@ -120,20 +120,20 @@ function NavBar({ onSearch }) {
 	});
 	const [ registerDisplay, setRegisterDisplay] = useState("none");
 
-	const getUserID = async () => {
-		const response = await axios("http://localhost:3001/get");
-		const data = await response.data;
-		if (data.length === 0) {
-			setUserID(1);
-		} else {
-			let userID = data[data.length-1].userID + 1;
-			setUserID(userID);
-		}
-	};
+	// const getUserID = async () => {
+	// 	const response = await axios("http://localhost:3001/get");
+	// 	const data = await response.data;
+	// 	if (data.length === 0) {
+	// 		setUserID(1);
+	// 	} else {
+	// 		let userID = data[data.length-1].userID + 1;
+	// 		setUserID(userID);
+	// 	}
+	// };
 
-	useEffect(() => {
-		getUserID();
-	}, []);
+	// useEffect(() => {
+	// 	getUserID();
+	// }, []);
  
 	const validateReg = () => {
 		let firstNameError = register.firstName.length < 3 ?
@@ -180,7 +180,7 @@ function NavBar({ onSearch }) {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
-					userID: userID,
+					// userID: userID,
 					userName: register.userName,
 					password: register.password,
 					firstName: register.firstName,
@@ -203,7 +203,7 @@ function NavBar({ onSearch }) {
 			}
 			res.text();
 			resetRegister();
-			getUserID();
+			// getUserID();
 		} else {
 			console.log("### SOMETHING IS WRONG ###",
 						"\nfirstName: " + register.firstName, 
@@ -281,6 +281,7 @@ function NavBar({ onSearch }) {
 		lastName: "",
 		email: "",
 		userName: "",
+		password: "",
 		street: "",
 		city: "",
 		state: "",
@@ -289,6 +290,7 @@ function NavBar({ onSearch }) {
 		lastNameError: null,
 		emailError: null,
 		userNameError: null,
+		passwordError: null,
 		streetError: null,
 		cityError: null,
 		stateError: null,
@@ -296,54 +298,58 @@ function NavBar({ onSearch }) {
 	});
 	const [ editUserDisplay, setEditUserDisplay] = useState("none");
  
-	// const validateEdit = () => {
-	// 	let firstNameError = editUser.firstName.length < 3 ?
-	// 		"minimum 3 characters required" : null;
-	// 	let lastNameError = editUser.lastName.length < 3 ?
-	// 		"minimum 3 characters required" : null;
-	// 	let streetError = editUser.street.length < 3 ?
-	// 	"minimum 6 characters required" : null;
-	// 	let cityError = editUser.city.length < 3 ?
-	// 		"minimum 3 characters required" : null;
-	// 	let stateError = editUser.state.length < 2 ?
-	// 		"minimum 2 characters required" : null;
-	// 	let zipError = editUser.zip.match(new RegExp(/^[0-9]*$/)) ?
-	// 		"only number are accepted" : null;
+	const validateEdit = () => {
+		let firstNameErrorEdit = editUser.firstName.length < 3 ?
+			"minimum 3 characters required" : null;
+		let lastNameErrorEdit = editUser.lastName.length < 3 ?
+			"minimum 3 characters required" : null;
+		let streetErrorEdit = editUser.street.length < 3 ?
+		"minimum 6 characters required" : null;
+		let cityErrorEdit = editUser.city.length < 3 ?
+			"minimum 3 characters required" : null;
+		let stateErrorEdit = editUser.state.length < 2 ?
+			"minimum 2 characters required" : null;
+		let zipErrorEdit = editUser.zip.match(new RegExp(/[0-9]/g)) ?
+			null : "only number are accepted";
+		let passwordErrorEdit = editUser.password.length < 6 ?
+			"minimum 6 characters required" : null;
 		
-	// 	if (firstNameError || lastNameError || streetError || cityError || stateError || zipError) {
-	// 		setEditUser({
-	// 			...editUser,
-	// 			firstNameError: firstNameError,
-	// 			lastNameError: lastNameError,
-	// 			streetError: streetError,
-	// 			cityError: cityError,
-	// 			stateError: stateError,
-	// 			zipError: zipError
-	// 		});
-	// 		return false;
-	// 	}
-	// 	return true;
-	// }
+		if (firstNameErrorEdit || lastNameErrorEdit || streetErrorEdit || cityErrorEdit || stateErrorEdit || zipErrorEdit || passwordErrorEdit) {
+			setEditUser({
+				...editUser,
+				firstNameError: firstNameErrorEdit,
+				lastNameError: lastNameErrorEdit,
+				streetError: streetErrorEdit,
+				cityError: cityErrorEdit,
+				stateError: stateErrorEdit,
+				zipError: zipErrorEdit,
+				passwordError: passwordErrorEdit
+			});
+			return false;
+		}
+		return true;
+	}
 
 	const onSubmitEdit = async (e) => {
 		e.preventDefault();
-		// const isValid = validateEdit();
-		// if (isValid) {
-		// 	console.log("--- SUBMITTING FORM ---",
-		// 				"\nfirstName: " + editUser.firstName, 
-		// 				"\nlastName: " + editUser.lastName,
-		// 				"\nuserName: " + editUser.userName,
-		// 				"\nstreet: " + editUser.street,
-		// 				"\ncity: " + editUser.city,
-		// 				"\nstate: " + editUser.state,
-		// 				"\nzip: " + editUser.zip,
-		// 				"\npassword: xxxxxx",
-		// 				"\nfirstNameError: " + editUser.firstNameError, 
-		// 				"\nlastNameError: " + editUser.lastNameError,
-		// 				"\nstreetError: " + editUser.streetError,
-		// 				"\ncityError: " + editUser.cityError,
-		// 				"\nstateError: " + editUser.stateError,
-		// 				"\nzipError: " + editUser.zipError);
+		const isValid = validateEdit();
+		if (isValid) {
+			console.log("--- SUBMITTING FORM ---",
+						"\nfirstName: " + editUser.firstName, 
+						"\nlastName: " + editUser.lastName,
+						"\nuserName: " + editUser.userName,
+						"\nstreet: " + editUser.street,
+						"\ncity: " + editUser.city,
+						"\nstate: " + editUser.state,
+						"\nzip: " + editUser.zip,
+						"\npassword: xxxxxx",
+						"\nfirstNameError: " + editUser.firstNameError, 
+						"\nlastNameError: " + editUser.lastNameError,
+						"\nstreetError: " + editUser.streetError,
+						"\ncityError: " + editUser.cityError,
+						"\nstateError: " + editUser.stateError,
+						"\nzipError: " + editUser.zipError,
+						"\npasswordError: " + editUser.passwordError);
 			const res = await fetch("http://localhost:3001/edit", {
 				method: 'put',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
@@ -351,6 +357,7 @@ function NavBar({ onSearch }) {
 					userName: editUser.userName,
 					firstName: editUser.firstName,
 					lastName: editUser.lastName,
+					password: editUser.password,
 					street: editUser.street,
 					city: editUser.city,
 					state: editUser.state,
@@ -361,29 +368,31 @@ function NavBar({ onSearch }) {
 			if (res.status === 400) {
 				alert('Unable to edit!');
 				openEditModal();
+				resetEditUserError();
 			} else {
 				alert('User information edited!');
 				e.target.reset();
 			}
 			res.text();
-		// } else {
-		// 	console.log("### SOMETHING IS WRONG ###",
-		// 		"\nfirstName: " + editUser.firstName, 
-		// 		"\nlastName: " + editUser.lastName,
-		// 		"\nemail: " + editUser.email,
-		// 		"\nuserName: " + editUser.userName,
-		// 		"\nstreet: " + editUser.street,
-		// 		"\ncity: " + editUser.city,
-		// 		"\nstate: " + editUser.state,
-		// 		"\nzip: " + editUser.zip,
-		// 		"\npassword: xxxxxx",
-		// 		"\nfirstNameError: " + editUser.firstNameError, 
-		// 		"\nlastNameError: " + editUser.lastNameError,
-		// 		"\nstreetError: " + editUser.streetError,
-		// 		"\ncityError: " + editUser.cityError,
-		// 		"\nstateError: " + editUser.stateError,
-		// 		"\nzipError: " + editUser.zipError);
-		// }
+		} else {
+			console.log("### SOMETHING IS WRONG ###",
+				"\nfirstName: " + editUser.firstName, 
+				"\nlastName: " + editUser.lastName,
+				"\nemail: " + editUser.email,
+				"\nuserName: " + editUser.userName,
+				"\nstreet: " + editUser.street,
+				"\ncity: " + editUser.city,
+				"\nstate: " + editUser.state,
+				"\nzip: " + editUser.zip,
+				"\npassword: xxxxxx",
+				"\nfirstNameError: " + editUser.firstNameError, 
+				"\nlastNameError: " + editUser.lastNameError,
+				"\nstreetError: " + editUser.streetError,
+				"\ncityError: " + editUser.cityError,
+				"\nstateError: " + editUser.stateError,
+				"\nzipError: " + editUser.zipError,
+				"\npasswordError: " + editUser.passwordError);
+		}
 	};
 	
 	const resetEditUser = () => {
@@ -392,6 +401,7 @@ function NavBar({ onSearch }) {
 			lastName: "",
 			email: "",
 			userName: "",
+			password: "",
 			street: "",
 			city: "",
 			state: "",
@@ -400,6 +410,7 @@ function NavBar({ onSearch }) {
 			lastNameError: null,
 			emailError: null,
 			userNameError: null,
+			passwordError: null,
 			streetError: null,
 			cityError: null,
 			stateError: null,
@@ -407,15 +418,15 @@ function NavBar({ onSearch }) {
 		});
 	};
 
-	// const resetEditUserError = () => {
-	// 	setEditUser({
-	// 		firstNameError: null,
-	// 		lastNameError: null,
-	// 		emailError: null,
-	// 		userNameError: null,
-	// 		passwordError: null
-	// 	});
-	// }
+	const resetEditUserError = () => {
+		setEditUser({
+			firstNameError: null,
+			lastNameError: null,
+			emailError: null,
+			userNameError: null,
+			passwordError: null
+		});
+	}
 
 	const openEditModal = () => {
 		setEditUserDisplay("flex");
@@ -444,12 +455,12 @@ function NavBar({ onSearch }) {
 						<ul>
 							<li><button className="navbar__signout" onClick={ openSignInModal }>Sign In</button></li>
 							<li><button className="navbar__signout" onClick={ openRegisterModal }>Sign Up</button></li>
-							<li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li>
+							{/* <li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li> */}
 						</ul>
 						:
 						<ul>
 							<li><button className="navbar__signout" onClick={ openEditModal }>Edit Profile</button></li>
-							<li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li>
+							{/* <li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li> */}
 							<li><button onClick={ onSignOut } className="navbar__signout" >Sign Out</button></li>
 						</ul>
 					}
@@ -604,7 +615,7 @@ function NavBar({ onSearch }) {
 							readOnly
 						/>
 						<input 
-							// className={ editUser.firstNameError === null ? "" : "signinreg__error" }
+							className={ editUser.firstNameError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="firstName"
 							placeholder="Firstname" 
@@ -619,7 +630,7 @@ function NavBar({ onSearch }) {
 						/>
 						<span>{ editUser.firstNameError }</span>
 						<input 
-							// className={ editUser.lastNameError === null ? "" : "signinreg__error" }
+							className={ editUser.lastNameError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="lastName"
 							placeholder="Lastname" 
@@ -638,8 +649,8 @@ function NavBar({ onSearch }) {
 							name="email"
 							readOnly
 						/>
-						{/* <input 
-							// className={ editUser.passwordError === null ? "" : "signinreg__error" }
+						<input 
+							className={ editUser.passwordError === null ? "" : "signinreg__error" }
 							type="password" 
 							name="password"
 							placeholder="Password" 
@@ -652,9 +663,9 @@ function NavBar({ onSearch }) {
 								});
 							} }
 						/>
-						<span>{ editUser.passwordError }</span> */}
+						<span>{ editUser.passwordError }</span>
 						<input 
-							// className={ editUser.streetError === null ? "" : "signinreg__error" }
+							className={ editUser.streetError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="street"
 							placeholder="Street" 
@@ -669,7 +680,7 @@ function NavBar({ onSearch }) {
 						/>
 						<span>{ editUser.streetError }</span>
 						<input 
-							// className={ editUser.cityError === null ? "" : "signinreg__error" }
+							className={ editUser.cityError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="city"
 							placeholder="City" 
@@ -684,7 +695,7 @@ function NavBar({ onSearch }) {
 						/>
 						<span>{ editUser.cityError }</span>
 						<input 
-							// className={ editUser.stateError === null ? "" : "signinreg__error" }
+							className={ editUser.stateError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="state"
 							placeholder="State" 
@@ -699,7 +710,7 @@ function NavBar({ onSearch }) {
 						/>
 						<span>{ editUser.stateError }</span>
 						<input 
-							// className={ editUser.zipError === null ? "" : "signinreg__error" }
+							className={ editUser.zipError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="zip"
 							placeholder="Zip" 
