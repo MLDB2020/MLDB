@@ -5,6 +5,8 @@ import YouTube from 'react-youtube';
 const MovieCard = ({ id, title, poster_path, vote_average, overview }) => {
 	const [display, setDisplay] = useState("none");
 	const [videoId, setVideoId] = useState("");
+	const [like, setLike] = useState(true);
+	const [voteAvg, setVoteAvg] = useState(vote_average);
 
 	const API_Key = process.env.REACT_APP_TMDB_API_KEY;
 	const API_Images = 'https://image.tmdb.org/t/p/original';
@@ -30,12 +32,23 @@ const MovieCard = ({ id, title, poster_path, vote_average, overview }) => {
 		setDisplay("none");
 	}
 
+	const onLike = (e) => {
+		setLike(!like);
+		if (like) {
+			e.target.style.backgroundColor = "rgb(2, 33, 78)";
+			setVoteAvg(voteAvg + .1);
+		} else {
+			e.target.style.backgroundColor = "rgb(44, 65, 139)";
+			setVoteAvg(voteAvg - .1);
+		}
+	}
+
 	return (
 		<div className="movies__card">
 			<div key={ id }>
 				<img src={ poster_path == null ? default_banner : API_Images+poster_path } alt={ title }/>
 			</div>
-			<span className="movies__rating"> ⭐: { vote_average }</span>
+			<span className="movies__rating"> ⭐: { voteAvg }</span>
 			<div className="movies__description">
 				<h3><i>{ title }</i></h3>
 				<h4>Overview:</h4>
@@ -46,6 +59,7 @@ const MovieCard = ({ id, title, poster_path, vote_average, overview }) => {
 						Tickets
 					</a>
 				</button>
+				<button id="like" onClick={ onLike }>👍</button>
 			</div>
 
 			<div style={{display: display}} className="movies__modal">
