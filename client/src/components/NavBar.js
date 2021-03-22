@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import validator from 'validator';
 import MLDB_logo from '../MLDB_logo.png';
 
-function NavBar({ onSearch }) {
+function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 
 	/* HANDLING SIGN IN */
 	const [ signIn, setSignIn ] = useState({
@@ -13,7 +13,6 @@ function NavBar({ onSearch }) {
 		passwordError: null
 	});
 	const [ signInDisplay, setSignInDisplay] = useState("none");
-	const [ isSignedIn, setIsSignedIn ] = useState(false);	
 
 	const validateSignIn = () => {
 		let userNameError = signIn.userName.length === 0 ?
@@ -36,9 +35,7 @@ function NavBar({ onSearch }) {
 		e.preventDefault();
 		let isValid = validateSignIn();
 		if (isValid) {
-			console.log("--- SUBMITTING FORM ---",
-						"\nuserName: " + signIn.userName, 
-						"\npassword: xxxxxx");
+			console.log("--- SUBMITTING SIGN IN FORM ---");
 			const res = await fetch("http://localhost:3001/signin", {
 				method: 'post',
 				headers: {'Content-Type': 'application/json'},
@@ -70,9 +67,7 @@ function NavBar({ onSearch }) {
 				openSignInModal();
 			}
 		} else {
-			console.log("### SOMETHING IS WRONG WITH: ###",
-						"\nuserName: " + signIn.userName, 
-						"\npassword: xxxxxx");
+			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
 
@@ -105,7 +100,6 @@ function NavBar({ onSearch }) {
 
 
 	/* HANDLING REGISTER */
-	// const [ userID, setUserID ] = useState(1);
 	const [ register, setRegister ] = useState({
 		firstName: "",
 		lastName: "",
@@ -119,21 +113,6 @@ function NavBar({ onSearch }) {
 		passwordError: null
 	});
 	const [ registerDisplay, setRegisterDisplay] = useState("none");
-
-	// const getUserID = async () => {
-	// 	const response = await axios("http://localhost:3001/get");
-	// 	const data = await response.data;
-	// 	if (data.length === 0) {
-	// 		setUserID(1);
-	// 	} else {
-	// 		let userID = data[data.length-1].userID + 1;
-	// 		setUserID(userID);
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	getUserID();
-	// }, []);
  
 	const validateReg = () => {
 		let firstNameError = register.firstName.length < 3 ?
@@ -165,17 +144,7 @@ function NavBar({ onSearch }) {
 		e.preventDefault();
 		const isValid = validateReg();
 		if (isValid) {
-			console.log("--- SUBMITTING FORM ---",
-						"\nfirstName: " + register.firstName, 
-						"\nlastName: " + register.lastName,
-						"\nemail: " + register.email,
-						"\nuserName: " + register.userName,
-						"\npassword: xxxxxx",
-						"\nfirstNameError: " + register.firstNameError, 
-						"\nlastNameError: " + register.lastNameError,
-						"\nemailError: " + register.emailError,
-						"\nuserNameError: " + register.userNameError,
-						"\npasswordError: " + register.passwordError);
+			console.log("--- SUBMITTING REGISTER FORM ---");
 			const res = await fetch("http://localhost:3001/register", {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
@@ -203,19 +172,8 @@ function NavBar({ onSearch }) {
 			}
 			res.text();
 			resetRegister();
-			// getUserID();
 		} else {
-			console.log("### SOMETHING IS WRONG ###",
-						"\nfirstName: " + register.firstName, 
-						"\nlastName: " + register.lastName,
-						"\nemail: " + register.email,
-						"\nuserName: " + register.userName,
-						"\npassword: xxxxxx",
-						"\nfirstNameError: " + register.firstNameError, 
-						"\nlastNameError: " + register.lastNameError,
-						"\nemailError: " + register.emailError,
-						"\nuserNameError: " + register.userNameError,
-						"\npasswordError: " + register.passwordError);
+			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
 	
@@ -253,25 +211,6 @@ function NavBar({ onSearch }) {
 	const closeRegisterModal = () => {
 		setRegisterDisplay("none");
 		opacityOff();
-	}
-
-	// GENERAL FUNCTIONS
-	const opacityOn = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "10%";
-		movies.style.opacity = "10%";
-		footer.style.opacity = "10%";
-	}
-
-	const opacityOff = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "100%";
-		movies.style.opacity = "100%";
-		footer.style.opacity = "100%";
 	}
 
 
@@ -334,22 +273,7 @@ function NavBar({ onSearch }) {
 		e.preventDefault();
 		const isValid = validateEdit();
 		if (isValid) {
-			console.log("--- SUBMITTING FORM ---",
-						"\nfirstName: " + editUser.firstName, 
-						"\nlastName: " + editUser.lastName,
-						"\nuserName: " + editUser.userName,
-						"\nstreet: " + editUser.street,
-						"\ncity: " + editUser.city,
-						"\nstate: " + editUser.state,
-						"\nzip: " + editUser.zip,
-						"\npassword: xxxxxx",
-						"\nfirstNameError: " + editUser.firstNameError, 
-						"\nlastNameError: " + editUser.lastNameError,
-						"\nstreetError: " + editUser.streetError,
-						"\ncityError: " + editUser.cityError,
-						"\nstateError: " + editUser.stateError,
-						"\nzipError: " + editUser.zipError,
-						"\npasswordError: " + editUser.passwordError);
+			console.log("--- SUBMITTING EDIT PROFILE FORM ---");
 			const res = await fetch("http://localhost:3001/edit", {
 				method: 'put',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
@@ -375,23 +299,7 @@ function NavBar({ onSearch }) {
 			}
 			res.text();
 		} else {
-			console.log("### SOMETHING IS WRONG ###",
-				"\nfirstName: " + editUser.firstName, 
-				"\nlastName: " + editUser.lastName,
-				"\nemail: " + editUser.email,
-				"\nuserName: " + editUser.userName,
-				"\nstreet: " + editUser.street,
-				"\ncity: " + editUser.city,
-				"\nstate: " + editUser.state,
-				"\nzip: " + editUser.zip,
-				"\npassword: xxxxxx",
-				"\nfirstNameError: " + editUser.firstNameError, 
-				"\nlastNameError: " + editUser.lastNameError,
-				"\nstreetError: " + editUser.streetError,
-				"\ncityError: " + editUser.cityError,
-				"\nstateError: " + editUser.stateError,
-				"\nzipError: " + editUser.zipError,
-				"\npasswordError: " + editUser.passwordError);
+			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
 	
@@ -436,6 +344,26 @@ function NavBar({ onSearch }) {
 	const closeEditModal = () => {
 		setEditUserDisplay("none");
 		opacityOff();
+	}
+
+	
+	// GENERAL FUNCTIONS
+	const opacityOn = () => {
+		let nav = document.getElementById("nav");
+		let movies = document.getElementById("movies");
+		let footer = document.getElementById("footer");
+		nav.style.opacity = "10%";
+		movies.style.opacity = "10%";
+		footer.style.opacity = "10%";
+	}
+
+	const opacityOff = () => {
+		let nav = document.getElementById("nav");
+		let movies = document.getElementById("movies");
+		let footer = document.getElementById("footer");
+		nav.style.opacity = "100%";
+		movies.style.opacity = "100%";
+		footer.style.opacity = "100%";
 	}
 
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import validator from 'validator';
 
-function Footer() {
+function Footer({ isSignedIn }) {
 	const year = new Date().getFullYear();
 	const [ customerSupport, setCustomerSupport ] = useState({
 		firstName: "",
@@ -109,7 +109,7 @@ function Footer() {
 	return (
 		<div>
 			<div className="footer__container" id="footer">
-				<button onClick={ openCustomerSupportModal }>Get Customer Support</button>
+				<button id="support" onClick={ openCustomerSupportModal } disabled={ isSignedIn ? false : true }>Get Customer Support</button>
 				<p>&#169;Copyright - MLDB { year }</p>
 			</div>
 

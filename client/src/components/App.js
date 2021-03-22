@@ -12,6 +12,7 @@ function App() {
   const [ nowPlaying, setNowPlaying ] = useState([]);
   const [ search, setSearch ] = useState([]);
   const [ isQuery, setIsQuery ] = useState(false);
+  const [ isSignedIn, setIsSignedIn ] = useState(false);
   
   const getNowPlaying = async () => {
     const res = await fetch(API_NowPlaying);
@@ -45,12 +46,12 @@ function App() {
   return (
     <div className="app">
       <NavBar 
-        onSearch={ onSearch }
+        onSearch={ onSearch } isSignedIn={ isSignedIn } setIsSignedIn={ setIsSignedIn }
       />
       <Movies 
         movies={ isQuery ? search : nowPlaying } 
       />
-      <Footer />
+      <Footer isSignedIn={ isSignedIn } />
     </div>
   );
 };
