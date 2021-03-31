@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import validator from 'validator';
 import MLDB_logo from '../MLDB_logo.png';
 
-function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
+function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 
 	/* HANDLING SIGN IN */
 	const [ signIn, setSignIn ] = useState({
@@ -47,7 +47,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 			const data = await res.json();
 			if (data.userID) {
 				alert('Sucessful login');
-				setEditUser({
+				setUser({
 					firstName: data.firstName,
 					lastName: data.lastName,
 					email: data.email,
@@ -57,7 +57,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 					city: data.city,
 					state: data.state,
 					zip: data.zipCode
-				})
+				});
 				setIsSignedIn(true);
 				e.target.reset();
 				closeSignInModal();
@@ -83,7 +83,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 	const onSignOut = () => {
 		resetSignIn();
 		resetRegister();
-		resetEditUser();
+		resetUser();
 		setIsSignedIn(!isSignedIn);
 	};
 
@@ -149,7 +149,6 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
-					// userID: userID,
 					userName: register.userName,
 					password: register.password,
 					firstName: register.firstName,
@@ -216,15 +215,6 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 
 	/* HANDLING EDIT PROFILE */
 	const [ editUser, setEditUser ] = useState({
-		firstName: "",
-		lastName: "",
-		email: "",
-		userName: "",
-		password: "",
-		street: "",
-		city: "",
-		state: "",
-		zip: "",
 		firstNameError: null,
 		lastNameError: null,
 		emailError: null,
@@ -238,24 +228,23 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 	const [ editUserDisplay, setEditUserDisplay] = useState("none");
  
 	const validateEdit = () => {
-		let firstNameErrorEdit = editUser.firstName.length < 3 ?
+		let firstNameErrorEdit = user.firstName.length < 3 ?
 			"minimum 3 characters required" : null;
-		let lastNameErrorEdit = editUser.lastName.length < 3 ?
+		let lastNameErrorEdit = user.lastName.length < 3 ?
 			"minimum 3 characters required" : null;
-		let streetErrorEdit = editUser.street.length < 3 ?
+		let streetErrorEdit = user.street.length < 3 ?
 		"minimum 6 characters required" : null;
-		let cityErrorEdit = editUser.city.length < 3 ?
+		let cityErrorEdit = user.city.length < 3 ?
 			"minimum 3 characters required" : null;
-		let stateErrorEdit = editUser.state.length < 2 ?
+		let stateErrorEdit = user.state.length < 2 ?
 			"minimum 2 characters required" : null;
-		let zipErrorEdit = editUser.zip.match(new RegExp(/[0-9]/g)) ?
+		let zipErrorEdit = user.zip.match(new RegExp(/[0-9]/g)) ?
 			null : "only number are accepted";
-		let passwordErrorEdit = editUser.password.length < 6 ?
+		let passwordErrorEdit = user.password.length < 6 ?
 			"minimum 6 characters required" : null;
 		
 		if (firstNameErrorEdit || lastNameErrorEdit || streetErrorEdit || cityErrorEdit || stateErrorEdit || zipErrorEdit || passwordErrorEdit) {
 			setEditUser({
-				...editUser,
 				firstNameError: firstNameErrorEdit,
 				lastNameError: lastNameErrorEdit,
 				streetError: streetErrorEdit,
@@ -278,14 +267,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 				method: 'put',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
-					userName: editUser.userName,
-					firstName: editUser.firstName,
-					lastName: editUser.lastName,
-					password: editUser.password,
-					street: editUser.street,
-					city: editUser.city,
-					state: editUser.state,
-					zip: editUser.zip
+					userName: user.userName,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					password: user.password,
+					street: user.street,
+					city: user.city,
+					state: user.state,
+					zip: user.zip
 				}), 
 			});
 			console.log(res)
@@ -302,18 +291,9 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
-	
-	const resetEditUser = () => {
+
+	const resetEditUserError = () => {
 		setEditUser({
-			firstName: "",
-			lastName: "",
-			email: "",
-			userName: "",
-			password: "",
-			street: "",
-			city: "",
-			state: "",
-			zip: "",
 			firstNameError: null,
 			lastNameError: null,
 			emailError: null,
@@ -323,16 +303,6 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 			cityError: null,
 			stateError: null,
 			zipError: null
-		});
-	};
-
-	const resetEditUserError = () => {
-		setEditUser({
-			firstNameError: null,
-			lastNameError: null,
-			emailError: null,
-			userNameError: null,
-			passwordError: null
 		});
 	}
 
@@ -355,7 +325,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 		nav.style.opacity = "10%";
 		movies.style.opacity = "10%";
 		footer.style.opacity = "10%";
-	}
+	};
 
 	const opacityOff = () => {
 		let nav = document.getElementById("nav");
@@ -364,7 +334,21 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 		nav.style.opacity = "100%";
 		movies.style.opacity = "100%";
 		footer.style.opacity = "100%";
-	}
+	};
+
+	const resetUser = () => {
+		setUser({
+			firstName: "",
+			lastName: "",
+			email: "",
+			userName: "",
+			password: "",
+			street: "",
+			city: "",
+			state: "",
+			zip: "",
+		});
+	};
 
 
 	return (
@@ -383,12 +367,10 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 						<ul>
 							<li><button className="navbar__signout" onClick={ openSignInModal }>Sign In</button></li>
 							<li><button className="navbar__signout" onClick={ openRegisterModal }>Sign Up</button></li>
-							{/* <li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li> */}
 						</ul>
 						:
 						<ul>
 							<li><button className="navbar__signout" onClick={ openEditModal }>Edit Profile</button></li>
-							{/* <li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li> */}
 							<li><button onClick={ onSignOut } className="navbar__signout" >Sign Out</button></li>
 						</ul>
 					}
@@ -532,13 +514,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 				</div>
 			</div>
 
+
 			{/* EDIT INFORMATION MODAL */}
 			<div style={{display: editUserDisplay}} className="signinreg__container">
 				<div className="signinreg__form__container">
 					<h1>Edit Information</h1>
 					<form className="signinreg__form" onSubmit={ onSubmitEdit }>
 						<input 
-							value={ editUser.userName }
+							value={ user.userName }
 							name="username"
 							readOnly
 						/>
@@ -547,33 +530,39 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 							type="text" 
 							name="firstName"
 							placeholder="Firstname" 
-							value={ editUser.firstName }
+							value={ user.firstName }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									firstName: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									firstNameError: null
 								});
 							} }
 						/>
-						<span>{ editUser.firstNameError }</span>
+						<span>{ user.firstNameError }</span>
 						<input 
 							className={ editUser.lastNameError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="lastName"
 							placeholder="Lastname" 
-							value={ editUser.lastName }
+							value={ user.lastName }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									lastName: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									lastNameError: null
 								});
 							} }
 						/>
 						<span>{ editUser.lastNameError }</span>
 						<input 
-							value={ editUser.email }
+							value={ user.email }
 							name="email"
 							readOnly
 						/>
@@ -582,11 +571,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 							type="password" 
 							name="password"
 							placeholder="Password" 
-							value={ editUser.password }
+							value={ user.password }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									password: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									passwordError: null
 								});
 							} }
@@ -597,11 +589,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 							type="text" 
 							name="street"
 							placeholder="Street" 
-							value={ editUser.street }
+							value={ user.street }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									street: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									streetError: null
 								});
 							} }
@@ -612,11 +607,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 							type="text" 
 							name="city"
 							placeholder="City" 
-							value={ editUser.city }
+							value={ user.city }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									city: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									cityError: null
 								});
 							} }
@@ -627,11 +625,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 							type="text" 
 							name="state"
 							placeholder="State" 
-							value={ editUser.state }
+							value={ user.state }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									state: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									stateError: null
 								});
 							} }
@@ -642,11 +643,14 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn }) {
 							type="text" 
 							name="zip"
 							placeholder="Zip" 
-							value={ editUser.zip }
+							value={ user.zip }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									zip: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									zipError: null
 								});
 							} }

@@ -32,9 +32,16 @@ app.get('/getuser', (req, res) => {
 });
 
 
-// GET FEEDBACK DATA INFORMATION
+// GET SUPPORT DATA INFORMATION
 app.get('/getsupport', (req, res) => {
 	db.select('*').from('support').then(data => {
+		res.send(data);
+	});
+});
+
+// GET USERFEEDBACK DATA INFORMATION
+app.get('/getuserfeedback', (req, res) => {
+	db.select('*').from('userfeedback').then(data => {
 		res.send(data);
 	});
 });
@@ -120,26 +127,56 @@ app.post("/register", async (req, res) => {
 });
 
 
-// SUPPORT / FEEDBACK PAGE
+// CUSTOMER SUPPORT
 app.post("/support", async (req, res) => {
+	db.select('userID').from('user')
+	.where('userName', '=', req.body.userName)
+	.then(async data => {
+		if (data) {
+			let userID = data[0].userID;
+			await db.insert(
+			{
+					userID: userID,
+					message: req.body.message
+			})
+			.into('support')
+			.then(data => {
+				res.json(data);
+				console.log("Message received by our Customer Support.");
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(400).json('Something is wrong.');
+			});
+		} else {
+			console.log('User doesn\'t exist');
+		}
+	});
+});
+
+
+// USER (RELATIONSHIP) FEEDBACK
+app.post("/userfeedback", async (req, res) => {
 	const { 
-		firstName,
-		lastName,
-		email,
-		message
+		firstVisit,
+		satisfied,
+		easyToNavigate,
+		likelihoodToReturn,
+		comments
 	} = req.body;
 	db.insert(
 		{
-			firstName: firstName,
-			lastName: lastName,
-			email: email,
-			message: message
+			firstVisit: firstVisit,
+			satisfied: satisfied,
+			easyToNavigate: easyToNavigate,
+			likelihoodToReturn: likelihoodToReturn,
+			comments: comments
 		}
 	)
-	.into('support')
+	.into('userfeedback')
 	.then(data => {
 		res.json(data);
-		console.log("Message received by our Customer Support.");
+		console.log("Feedback received.");
 	})
 	.catch(err => {
 		console.log(err);

@@ -333,7 +333,7 @@ SIGN IN / REGISTER
 
 .signinreg__form__container h1 {
     font-size: 50px;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     color: whitesmoke;
     opacity: 90%;
     text-align: center;
@@ -486,7 +486,23 @@ FOOTER
     width: 410px;
     border-radius: 5px;
     height: 120px;
-    font-size: 20px;
+    font-size: 18px;
     resize: none;
+}
+
+.signinreg__form__container h6 {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: whitesmoke;
+    opacity: 80%;
+    text-align: center;
+}
+
+.signinreg__form__container label {
+    margin-bottom: 2px;
+}
+
+.signinreg__form__container select {
+    margin-bottom: 7px;
 }
 

@@ -13,6 +13,17 @@ function App() {
   const [ search, setSearch ] = useState([]);
   const [ isQuery, setIsQuery ] = useState(false);
   const [ isSignedIn, setIsSignedIn ] = useState(false);
+  const [ user, setUser ] = useState({
+    firstName: "",
+		lastName: "",
+		email: "",
+		userName: "",
+		password: "",
+		street: "",
+		city: "",
+		state: "",
+		zip: "",
+  });
   
   const getNowPlaying = async () => {
     const res = await fetch(API_NowPlaying);
@@ -46,12 +57,19 @@ function App() {
   return (
     <div className="app">
       <NavBar 
-        onSearch={ onSearch } isSignedIn={ isSignedIn } setIsSignedIn={ setIsSignedIn }
+        onSearch={ onSearch } 
+        isSignedIn={ isSignedIn } 
+        setIsSignedIn={ setIsSignedIn } 
+        setUser={ setUser } 
+        user={ user } 
       />
       <Movies 
         movies={ isQuery ? search : nowPlaying } 
       />
-      <Footer isSignedIn={ isSignedIn } />
+      <Footer 
+        isSignedIn={ isSignedIn } 
+        user={ user }
+      />
     </div>
   );
 };
