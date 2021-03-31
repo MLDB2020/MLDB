@@ -1,42 +1,7 @@
 import React, { useState } from 'react'
-import validator from 'validator';
 
-function Footer() {
+function Footer({ isSignedIn, user }) {
 	const year = new Date().getFullYear();
-	const [ customerSupport, setCustomerSupport ] = useState({
-		firstName: "",
-		lastName: "",
-		email: "",
-		message: "",
-		firstNameError: null,
-		lastNameError: null,
-		emailError: null,
-		messageError: null
-	});
-	const [ customerSupportDisplay, setCustomerSupportDisplay] = useState("none");
-
-	const openCustomerSupportModal = () => {
-		setCustomerSupportDisplay("flex");
-		opacityOn();
-	}
-
-	const closeCustomerSupportModal = () => {
-		setCustomerSupportDisplay("none");
-		opacityOff();
-	}
-
-	const resetCustomerSupport = () => {
-		setCustomerSupport({
-			firstName: "",
-			lastName: "",
-			email: "",
-			message: "",
-			firstNameError: null,
-			lastNameError: null,
-			emailError: null,
-			messageError: null
-		});
-	};
 
 	// GENERAL FUNCTIONS
 	const opacityOn = () => {
@@ -57,22 +22,38 @@ function Footer() {
 		footer.style.opacity = "100%";
 	}
 
+
+	/* HANDLING CUSTOMER SUPPORT */
+	const [ customerSupport, setCustomerSupport ] = useState({
+		message: "",
+		messageError: null
+	});
+	const [ customerSupportDisplay, setCustomerSupportDisplay] = useState("none");
+
+	const openCustomerSupportModal = () => {
+		setCustomerSupportDisplay("flex");
+		opacityOn();
+	}
+
+	const closeCustomerSupportModal = () => {
+		setCustomerSupportDisplay("none");
+		opacityOff();
+	}
+
+	const resetCustomerSupport = () => {
+		setCustomerSupport({
+			message: "",
+			messageError: null
+		});
+	};
+
 	const validateCustomerSupport = () => {
-		let firstNameError = customerSupport.firstName.length < 3 ?
-			"minimum 3 characters required" : null;
-		let lastNameError = customerSupport.lastName.length < 3 ?
-			"minimum 3 characters required" : null;
-		let emailError = validator.isEmail(customerSupport.email) ? 
-			null : "invalid email address";
 		let messageError = customerSupport.message.length < 1 ?
 			"message field is empty" : null;
 		
-		if (firstNameError || lastNameError || emailError || messageError) {
+		if (messageError) {
 			setCustomerSupport({
 				...customerSupport,
-				firstNameError: firstNameError,
-				lastNameError: lastNameError,
-				emailError: emailError,
 				messageError: messageError,
 			});
 			return false;
@@ -88,9 +69,7 @@ function Footer() {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
-					firstName: customerSupport.firstName,
-					lastName: customerSupport.lastName,
-					email: customerSupport.email,
+					userName: user.userName,
 					message: customerSupport.message
 				}), 
 			})
@@ -103,13 +82,78 @@ function Footer() {
 				alert('Unable to send message!');
 				openCustomerSupportModal();
 			}
+		} else {
+			alert('Please fill out all the fields!')
+		}
+	};
+
+
+	/* HANDLING FEEDBACK */
+	const [ feedback, setFeedback ] = useState({
+		firstVisit: "",
+		satisfied: "",
+		easyToNavigate: "",
+		likelihoodToReturn: "",
+		comments: "",
+	});
+	const [ feedbackDisplay, setFeedbackDisplay] = useState("none");
+	let feedbackBtn = document.getElementById("feedback");
+
+	const openFeedbackModal = () => {
+		setFeedbackDisplay("flex");
+		opacityOn();
+	}
+
+	const closeFeedbackModal = () => {
+		setFeedbackDisplay("none");
+		opacityOff();
+	}
+
+	const resetFeedback = () => {
+		setFeedback({
+			firstVisit: "",
+			satisfied: "",
+			easyToNavigate: "",
+			likelihoodToReturn: "",
+			comments: "",
+		});
+	};
+
+	const onSubmitFeedback = async (e) => {
+		e.preventDefault();
+		if (feedback.firstVisit && feedback.satisfied && feedback.easyToNavigate && feedback.likelihoodToReturn) {
+			const res = await fetch("http://localhost:3001/userfeedback", {
+				method: 'post',
+				headers: {'Content-Type': 'application/json; charset=utf-8'},
+				body: JSON.stringify({
+					firstVisit: feedback.firstVisit,
+					satisfied: feedback.satisfied,
+					easyToNavigate: feedback.easyToNavigate,
+					likelihoodToReturn: feedback.likelihoodToReturn,
+					comments: feedback.comments,
+				}), 
+			})
+			if (res.status === 200) {
+				alert('Thanks for giving your feedback!');
+				e.target.reset();
+				resetFeedback();
+				closeFeedbackModal();
+				feedbackBtn.setAttribute("disabled", true);
+				feedbackBtn.innerText = "Thanks for the feedback"
+			} else {
+				alert('Unable to give feedback!');
+				openFeedbackModal();
+			}
+		} else {
+			alert('Please answer the questions before submitting')
 		}
 	};
 
 	return (
 		<div>
 			<div className="footer__container" id="footer">
-				<button onClick={ openCustomerSupportModal }>Get Customer Support</button>
+				<button id="feedback" onClick={ openFeedbackModal }>Give Feedback</button>
+				{ isSignedIn && <button id="support" onClick={ openCustomerSupportModal }>Customer Support</button> }
 				<p>&#169;Copyright - MLDB { year }</p>
 			</div>
 
@@ -119,45 +163,24 @@ function Footer() {
 					<h1>Contact Customer Support</h1>
 					<form className="signinreg__form" onSubmit={ onSubmitCustomerSupport }>
 						<input 
-							className={ customerSupport.firstNameError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="firstName"
-							placeholder="Firstname" 
-							onChange={ (e) => {
-								setCustomerSupport({ 
-									...customerSupport,
-									firstName: e.target.value,
-									firstNameError: null
-								});
-							} }
+							value={ user.firstName }
+							readOnly
 						/>
 						<span>{ customerSupport.firstNameError }</span>
 						<input 
-							className={ customerSupport.lastNameError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="lastName"
-							placeholder="Lastname" 
-							onChange={ (e) => {
-								setCustomerSupport({ 
-									...customerSupport,
-									lastName: e.target.value,
-									lastNameError: null
-								});
-							} }
+							value={ user.lastName }
+							readOnly
 						/>
 						<span>{ customerSupport.lastNameError }</span>
 						<input 
-							className={ customerSupport.emailError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="email"
-							placeholder="Email"
-							onChange={ (e) => {
-								setCustomerSupport({ 
-									...customerSupport,
-									email: e.target.value,
-									emailError: null
-								});
-							} }
+							value={ user.email }
+							readOnly
 						/>
 						<span>{ customerSupport.emailError }</span>
 						<textarea 
@@ -178,8 +201,100 @@ function Footer() {
 							type='submit' 
 						>Send Message</button>
 						<hr style={{border: "1px solid whitesmoke"}}/>
-						<button className="signinreg__submit" onClick={ closeCustomerSupportModal }>Back to Home</button>
 					</form>
+					<button className="signinreg__submit" onClick={ closeCustomerSupportModal }>Back to Home</button>
+				</div>
+			</div>
+
+			{/* FEEDBACK MODAL */}
+			<div style={{display: feedbackDisplay}} className="signinreg__container">
+				<div className="signinreg__form__container">
+					<h1>User Feedback</h1>
+					<h6>Please complete the following form and help us improve our user relationship.</h6>
+					<form className="signinreg__form" onSubmit={ onSubmitFeedback }>
+						<label>1. Is this your first visit to the website?</label>
+						<br/>
+						<select
+							onChange={ (e) => {
+								setFeedback({ 
+									...feedback,
+									firstVisit: e.target.value
+								});
+							} }
+						>
+							<option defaultValue></option>
+							<option value="Yes">Yes</option>
+							<option value="No">No</option>
+						</select>
+						<br/>
+						<label>2. Are you satisfied with the content of the site?</label>
+						<br/>
+						<select
+							onChange={ (e) => {
+								setFeedback({ 
+									...feedback,
+									satisfied: e.target.value
+								});
+							} }
+						>
+							<option defaultValue></option>
+							<option value="Yes">Yes</option>
+							<option value="No">No</option>
+						</select>
+						<br/>
+						<label>3. How easy is it to navigate through the site?</label>
+						<br/>
+						<select
+							onChange={ (e) => {
+								setFeedback({ 
+									...feedback,
+									easyToNavigate: e.target.value
+								});
+							} }
+						>
+							<option defaultValue></option>
+							<option value="Very Easy">Very Easy</option>
+							<option value="Easy">Easy</option>
+							<option value="Average">Average</option>
+							<option value="Difficult">Difficult</option>
+							<option value="Very Difficult">Very Difficult</option>
+						</select>
+						<label>4. What is the likelihood that you will return to the site?</label>
+						<br/>
+						<select
+							onChange={ (e) => {
+								setFeedback({ 
+									...feedback,
+									likelihoodToReturn: e.target.value
+								});
+							} }
+						>
+							<option defaultValue></option>
+							<option value="Extremely Likely">Extremely Likely</option>
+							<option value="Very Likely">Very Likely</option>
+							<option value="Moderately Likely">Moderately Likely</option>
+							<option value="Slightly Likely">Slightly Likely</option>
+							<option value="Unlikely to Return">Unlikely to Return</option>
+						</select>
+						<br/>
+						<label>5. Please provide any comments: (optional)</label>
+						<textarea 
+							name="comments"
+							placeholder="Comments" 
+							onChange={ (e) => {
+								setFeedback({ 
+									...feedback,
+									comments: e.target.value,
+								});
+							} }
+						/>
+						<button 
+							className="signinreg__submit"
+							type='submit' 
+						>Send Feedback</button>
+						<hr style={{border: "1px solid whitesmoke"}}/>
+					</form>
+					<button className="signinreg__submit" onClick={ closeFeedbackModal }>Back to Home</button>
 				</div>
 			</div>
 		</div>

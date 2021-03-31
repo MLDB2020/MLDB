@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import validator from 'validator';
 import MLDB_logo from '../MLDB_logo.png';
 
-function NavBar({ onSearch }) {
+function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 
 	/* HANDLING SIGN IN */
 	const [ signIn, setSignIn ] = useState({
@@ -13,7 +13,6 @@ function NavBar({ onSearch }) {
 		passwordError: null
 	});
 	const [ signInDisplay, setSignInDisplay] = useState("none");
-	const [ isSignedIn, setIsSignedIn ] = useState(false);	
 
 	const validateSignIn = () => {
 		let userNameError = signIn.userName.length === 0 ?
@@ -36,9 +35,7 @@ function NavBar({ onSearch }) {
 		e.preventDefault();
 		let isValid = validateSignIn();
 		if (isValid) {
-			console.log("--- SUBMITTING FORM ---",
-						"\nuserName: " + signIn.userName, 
-						"\npassword: xxxxxx");
+			console.log("--- SUBMITTING SIGN IN FORM ---");
 			const res = await fetch("http://localhost:3001/signin", {
 				method: 'post',
 				headers: {'Content-Type': 'application/json'},
@@ -50,7 +47,7 @@ function NavBar({ onSearch }) {
 			const data = await res.json();
 			if (data.userID) {
 				alert('Sucessful login');
-				setEditUser({
+				setUser({
 					firstName: data.firstName,
 					lastName: data.lastName,
 					email: data.email,
@@ -60,7 +57,7 @@ function NavBar({ onSearch }) {
 					city: data.city,
 					state: data.state,
 					zip: data.zipCode
-				})
+				});
 				setIsSignedIn(true);
 				e.target.reset();
 				closeSignInModal();
@@ -70,9 +67,7 @@ function NavBar({ onSearch }) {
 				openSignInModal();
 			}
 		} else {
-			console.log("### SOMETHING IS WRONG WITH: ###",
-						"\nuserName: " + signIn.userName, 
-						"\npassword: xxxxxx");
+			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
 
@@ -88,7 +83,7 @@ function NavBar({ onSearch }) {
 	const onSignOut = () => {
 		resetSignIn();
 		resetRegister();
-		resetEditUser();
+		resetUser();
 		setIsSignedIn(!isSignedIn);
 	};
 
@@ -105,7 +100,6 @@ function NavBar({ onSearch }) {
 
 
 	/* HANDLING REGISTER */
-	// const [ userID, setUserID ] = useState(1);
 	const [ register, setRegister ] = useState({
 		firstName: "",
 		lastName: "",
@@ -119,21 +113,6 @@ function NavBar({ onSearch }) {
 		passwordError: null
 	});
 	const [ registerDisplay, setRegisterDisplay] = useState("none");
-
-	// const getUserID = async () => {
-	// 	const response = await axios("http://localhost:3001/get");
-	// 	const data = await response.data;
-	// 	if (data.length === 0) {
-	// 		setUserID(1);
-	// 	} else {
-	// 		let userID = data[data.length-1].userID + 1;
-	// 		setUserID(userID);
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	getUserID();
-	// }, []);
  
 	const validateReg = () => {
 		let firstNameError = register.firstName.length < 3 ?
@@ -165,22 +144,11 @@ function NavBar({ onSearch }) {
 		e.preventDefault();
 		const isValid = validateReg();
 		if (isValid) {
-			console.log("--- SUBMITTING FORM ---",
-						"\nfirstName: " + register.firstName, 
-						"\nlastName: " + register.lastName,
-						"\nemail: " + register.email,
-						"\nuserName: " + register.userName,
-						"\npassword: xxxxxx",
-						"\nfirstNameError: " + register.firstNameError, 
-						"\nlastNameError: " + register.lastNameError,
-						"\nemailError: " + register.emailError,
-						"\nuserNameError: " + register.userNameError,
-						"\npasswordError: " + register.passwordError);
+			console.log("--- SUBMITTING REGISTER FORM ---");
 			const res = await fetch("http://localhost:3001/register", {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
-					// userID: userID,
 					userName: register.userName,
 					password: register.password,
 					firstName: register.firstName,
@@ -203,19 +171,8 @@ function NavBar({ onSearch }) {
 			}
 			res.text();
 			resetRegister();
-			// getUserID();
 		} else {
-			console.log("### SOMETHING IS WRONG ###",
-						"\nfirstName: " + register.firstName, 
-						"\nlastName: " + register.lastName,
-						"\nemail: " + register.email,
-						"\nuserName: " + register.userName,
-						"\npassword: xxxxxx",
-						"\nfirstNameError: " + register.firstNameError, 
-						"\nlastNameError: " + register.lastNameError,
-						"\nemailError: " + register.emailError,
-						"\nuserNameError: " + register.userNameError,
-						"\npasswordError: " + register.passwordError);
+			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
 	
@@ -255,37 +212,9 @@ function NavBar({ onSearch }) {
 		opacityOff();
 	}
 
-	// GENERAL FUNCTIONS
-	const opacityOn = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "10%";
-		movies.style.opacity = "10%";
-		footer.style.opacity = "10%";
-	}
-
-	const opacityOff = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "100%";
-		movies.style.opacity = "100%";
-		footer.style.opacity = "100%";
-	}
-
 
 	/* HANDLING EDIT PROFILE */
 	const [ editUser, setEditUser ] = useState({
-		firstName: "",
-		lastName: "",
-		email: "",
-		userName: "",
-		password: "",
-		street: "",
-		city: "",
-		state: "",
-		zip: "",
 		firstNameError: null,
 		lastNameError: null,
 		emailError: null,
@@ -299,24 +228,23 @@ function NavBar({ onSearch }) {
 	const [ editUserDisplay, setEditUserDisplay] = useState("none");
  
 	const validateEdit = () => {
-		let firstNameErrorEdit = editUser.firstName.length < 3 ?
+		let firstNameErrorEdit = user.firstName.length < 3 ?
 			"minimum 3 characters required" : null;
-		let lastNameErrorEdit = editUser.lastName.length < 3 ?
+		let lastNameErrorEdit = user.lastName.length < 3 ?
 			"minimum 3 characters required" : null;
-		let streetErrorEdit = editUser.street.length < 3 ?
+		let streetErrorEdit = user.street.length < 3 ?
 		"minimum 6 characters required" : null;
-		let cityErrorEdit = editUser.city.length < 3 ?
+		let cityErrorEdit = user.city.length < 3 ?
 			"minimum 3 characters required" : null;
-		let stateErrorEdit = editUser.state.length < 2 ?
+		let stateErrorEdit = user.state.length < 2 ?
 			"minimum 2 characters required" : null;
-		let zipErrorEdit = editUser.zip.match(new RegExp(/[0-9]/g)) ?
+		let zipErrorEdit = user.zip.match(new RegExp(/[0-9]/g)) ?
 			null : "only number are accepted";
-		let passwordErrorEdit = editUser.password.length < 6 ?
+		let passwordErrorEdit = user.password.length < 6 ?
 			"minimum 6 characters required" : null;
 		
 		if (firstNameErrorEdit || lastNameErrorEdit || streetErrorEdit || cityErrorEdit || stateErrorEdit || zipErrorEdit || passwordErrorEdit) {
 			setEditUser({
-				...editUser,
 				firstNameError: firstNameErrorEdit,
 				lastNameError: lastNameErrorEdit,
 				streetError: streetErrorEdit,
@@ -334,34 +262,19 @@ function NavBar({ onSearch }) {
 		e.preventDefault();
 		const isValid = validateEdit();
 		if (isValid) {
-			console.log("--- SUBMITTING FORM ---",
-						"\nfirstName: " + editUser.firstName, 
-						"\nlastName: " + editUser.lastName,
-						"\nuserName: " + editUser.userName,
-						"\nstreet: " + editUser.street,
-						"\ncity: " + editUser.city,
-						"\nstate: " + editUser.state,
-						"\nzip: " + editUser.zip,
-						"\npassword: xxxxxx",
-						"\nfirstNameError: " + editUser.firstNameError, 
-						"\nlastNameError: " + editUser.lastNameError,
-						"\nstreetError: " + editUser.streetError,
-						"\ncityError: " + editUser.cityError,
-						"\nstateError: " + editUser.stateError,
-						"\nzipError: " + editUser.zipError,
-						"\npasswordError: " + editUser.passwordError);
+			console.log("--- SUBMITTING EDIT PROFILE FORM ---");
 			const res = await fetch("http://localhost:3001/edit", {
 				method: 'put',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
-					userName: editUser.userName,
-					firstName: editUser.firstName,
-					lastName: editUser.lastName,
-					password: editUser.password,
-					street: editUser.street,
-					city: editUser.city,
-					state: editUser.state,
-					zip: editUser.zip
+					userName: user.userName,
+					firstName: user.firstName,
+					lastName: user.lastName,
+					password: user.password,
+					street: user.street,
+					city: user.city,
+					state: user.state,
+					zip: user.zip
 				}), 
 			});
 			console.log(res)
@@ -375,37 +288,12 @@ function NavBar({ onSearch }) {
 			}
 			res.text();
 		} else {
-			console.log("### SOMETHING IS WRONG ###",
-				"\nfirstName: " + editUser.firstName, 
-				"\nlastName: " + editUser.lastName,
-				"\nemail: " + editUser.email,
-				"\nuserName: " + editUser.userName,
-				"\nstreet: " + editUser.street,
-				"\ncity: " + editUser.city,
-				"\nstate: " + editUser.state,
-				"\nzip: " + editUser.zip,
-				"\npassword: xxxxxx",
-				"\nfirstNameError: " + editUser.firstNameError, 
-				"\nlastNameError: " + editUser.lastNameError,
-				"\nstreetError: " + editUser.streetError,
-				"\ncityError: " + editUser.cityError,
-				"\nstateError: " + editUser.stateError,
-				"\nzipError: " + editUser.zipError,
-				"\npasswordError: " + editUser.passwordError);
+			console.log("### SOMETHING IS WRONG ###");
 		}
 	};
-	
-	const resetEditUser = () => {
+
+	const resetEditUserError = () => {
 		setEditUser({
-			firstName: "",
-			lastName: "",
-			email: "",
-			userName: "",
-			password: "",
-			street: "",
-			city: "",
-			state: "",
-			zip: "",
 			firstNameError: null,
 			lastNameError: null,
 			emailError: null,
@@ -415,16 +303,6 @@ function NavBar({ onSearch }) {
 			cityError: null,
 			stateError: null,
 			zipError: null
-		});
-	};
-
-	const resetEditUserError = () => {
-		setEditUser({
-			firstNameError: null,
-			lastNameError: null,
-			emailError: null,
-			userNameError: null,
-			passwordError: null
 		});
 	}
 
@@ -437,6 +315,40 @@ function NavBar({ onSearch }) {
 		setEditUserDisplay("none");
 		opacityOff();
 	}
+
+	
+	// GENERAL FUNCTIONS
+	const opacityOn = () => {
+		let nav = document.getElementById("nav");
+		let movies = document.getElementById("movies");
+		let footer = document.getElementById("footer");
+		nav.style.opacity = "10%";
+		movies.style.opacity = "10%";
+		footer.style.opacity = "10%";
+	};
+
+	const opacityOff = () => {
+		let nav = document.getElementById("nav");
+		let movies = document.getElementById("movies");
+		let footer = document.getElementById("footer");
+		nav.style.opacity = "100%";
+		movies.style.opacity = "100%";
+		footer.style.opacity = "100%";
+	};
+
+	const resetUser = () => {
+		setUser({
+			firstName: "",
+			lastName: "",
+			email: "",
+			userName: "",
+			password: "",
+			street: "",
+			city: "",
+			state: "",
+			zip: "",
+		});
+	};
 
 
 	return (
@@ -455,12 +367,10 @@ function NavBar({ onSearch }) {
 						<ul>
 							<li><button className="navbar__signout" onClick={ openSignInModal }>Sign In</button></li>
 							<li><button className="navbar__signout" onClick={ openRegisterModal }>Sign Up</button></li>
-							{/* <li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li> */}
 						</ul>
 						:
 						<ul>
 							<li><button className="navbar__signout" onClick={ openEditModal }>Edit Profile</button></li>
-							{/* <li><a href="https://www.amctheatres.com/movies?availability=NOW_PLAYING" target="_blank" rel="noreferrer" className="navbar__signout">Tickets</a></li> */}
 							<li><button onClick={ onSignOut } className="navbar__signout" >Sign Out</button></li>
 						</ul>
 					}
@@ -604,13 +514,14 @@ function NavBar({ onSearch }) {
 				</div>
 			</div>
 
+
 			{/* EDIT INFORMATION MODAL */}
 			<div style={{display: editUserDisplay}} className="signinreg__container">
 				<div className="signinreg__form__container">
 					<h1>Edit Information</h1>
 					<form className="signinreg__form" onSubmit={ onSubmitEdit }>
 						<input 
-							value={ editUser.userName }
+							value={ user.userName }
 							name="username"
 							readOnly
 						/>
@@ -619,33 +530,39 @@ function NavBar({ onSearch }) {
 							type="text" 
 							name="firstName"
 							placeholder="Firstname" 
-							value={ editUser.firstName }
+							value={ user.firstName }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									firstName: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									firstNameError: null
 								});
 							} }
 						/>
-						<span>{ editUser.firstNameError }</span>
+						<span>{ user.firstNameError }</span>
 						<input 
 							className={ editUser.lastNameError === null ? "" : "signinreg__error" }
 							type="text" 
 							name="lastName"
 							placeholder="Lastname" 
-							value={ editUser.lastName }
+							value={ user.lastName }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									lastName: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									lastNameError: null
 								});
 							} }
 						/>
 						<span>{ editUser.lastNameError }</span>
 						<input 
-							value={ editUser.email }
+							value={ user.email }
 							name="email"
 							readOnly
 						/>
@@ -654,11 +571,14 @@ function NavBar({ onSearch }) {
 							type="password" 
 							name="password"
 							placeholder="Password" 
-							value={ editUser.password }
+							value={ user.password }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									password: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									passwordError: null
 								});
 							} }
@@ -669,11 +589,14 @@ function NavBar({ onSearch }) {
 							type="text" 
 							name="street"
 							placeholder="Street" 
-							value={ editUser.street }
+							value={ user.street }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									street: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									streetError: null
 								});
 							} }
@@ -684,11 +607,14 @@ function NavBar({ onSearch }) {
 							type="text" 
 							name="city"
 							placeholder="City" 
-							value={ editUser.city }
+							value={ user.city }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									city: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									cityError: null
 								});
 							} }
@@ -699,11 +625,14 @@ function NavBar({ onSearch }) {
 							type="text" 
 							name="state"
 							placeholder="State" 
-							value={ editUser.state }
+							value={ user.state }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									state: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									stateError: null
 								});
 							} }
@@ -714,11 +643,14 @@ function NavBar({ onSearch }) {
 							type="text" 
 							name="zip"
 							placeholder="Zip" 
-							value={ editUser.zip }
+							value={ user.zip }
 							onChange={ (e) => {
-								setEditUser({ 
-									...editUser,
+								setUser({ 
+									...user,
 									zip: e.target.value,
+								});
+								setEditUser({
+									...editUser,
 									zipError: null
 								});
 							} }

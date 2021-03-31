@@ -13,7 +13,6 @@ CREATE TABLE user (
   city varchar(64) NULL,
   state varchar(64) NULL,
   zipCode varchar(10) NULL,
-  preferableGenre varchar(256) DEFAULT NULL,
   PRIMARY KEY (userID),
   UNIQUE KEY userName_UNIQUE (userName),
   UNIQUE KEY email_UNIQUE (email)
@@ -67,11 +66,11 @@ CREATE TABLE ticket (
 
 CREATE TABLE support (
   supportID int NOT NULL AUTO_INCREMENT,
-  firstName varchar(64) NOT NULL,
-  lastName varchar(256) NOT NULL,
-  email varchar(64) NOT NULL,
+  userID int NOT NULL,
   message varchar(256) DEFAULT NULL,
-  PRIMARY KEY (supportID)
+  PRIMARY KEY (supportID),
+  KEY userID_fk_sp_idx (userID),
+  CONSTRAINT userID_fk_sp FOREIGN KEY (userID) REFERENCES user (userID)
 );
 
 CREATE TABLE ticket_order (
@@ -84,4 +83,14 @@ CREATE TABLE ticket_order (
   KEY ticketID_fk_or_idx (ticketID),
   CONSTRAINT ticketID_fk_or FOREIGN KEY (ticketID) REFERENCES ticket (ticketID),
   CONSTRAINT userID_fk_or FOREIGN KEY (userID) REFERENCES user (userID)
+);
+
+CREATE TABLE userfeedback (
+  feedbackID int NOT NULL AUTO_INCREMENT,
+  firstVisit varchar(64) NOT NULL,
+  satisfied varchar(64) NOT NULL,
+  easyToNavigate varchar(64) NOT NULL,
+  likelihoodToReturn varchar(64) NOT NULL,
+  comments varchar(256) DEFAULT NULL,
+  PRIMARY KEY (feedbackID)
 );
