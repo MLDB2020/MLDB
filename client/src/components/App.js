@@ -3,6 +3,8 @@ import '../styles/App.css';
 import NavBar from './NavBar';
 import Movies from './Movies';
 import Footer from './Footer';
+import Ads from './Ads';
+
 
 const API_Key = process.env.REACT_APP_TMDB_API_KEY;
 const API_NowPlaying = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_Key}&language=en-US`;
@@ -24,7 +26,15 @@ function App() {
 		state: "",
 		zip: "",
   });
+  const [ companies, setCompanies ] = useState([]);
   
+  const getCompanies = async () => {
+    const res = await fetch("http://localhost:3001/getcompany");
+    const data = await res.json(); 
+    setCompanies(data);
+    console.log(data);
+  };
+
   const getNowPlaying = async () => {
     const res = await fetch(API_NowPlaying);
     const data = await res.json(); 
@@ -52,7 +62,9 @@ function App() {
   useEffect((onSearch) => {
     getNowPlaying();
     getSearch(onSearch); 
+    getCompanies();
   }, []);
+
 
   return (
     <div className="app">
@@ -63,6 +75,7 @@ function App() {
         setUser={ setUser } 
         user={ user } 
       />
+      <Ads companies={ companies } />
       <Movies 
         movies={ isQuery ? search : nowPlaying } 
       />
