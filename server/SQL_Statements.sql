@@ -70,7 +70,7 @@ CREATE TABLE support (
   message varchar(256) DEFAULT NULL,
   PRIMARY KEY (supportID),
   KEY userID_fk_sp_idx (userID),
-  CONSTRAINT userID_fk_sp FOREIGN KEY (userID) REFERENCES user (userID)
+  CONSTRAINT userID_fk_sp FOREIGN KEY (userID) REFERENCES user (userID) ON DELETE CASCADE
 );
 
 CREATE TABLE ticket_order (
@@ -93,4 +93,21 @@ CREATE TABLE userfeedback (
   likelihoodToReturn varchar(64) NOT NULL,
   comments varchar(256) DEFAULT NULL,
   PRIMARY KEY (feedbackID)
+);
+
+CREATE TABLE company (
+  companyID int NOT NULL AUTO_INCREMENT,
+  coName varchar(256) NOT NULL,
+  website varchar(256) NOT NULL,
+  imageFile varchar(45) NOT NULL,
+  PRIMARY KEY (companyID)
+);
+
+CREATE TABLE ads (
+  adID int NOT NULL AUTO_INCREMENT,
+  companyID int NOT NULL,
+  paymentAmount double NOT NULL,
+  PRIMARY KEY (adID),
+  KEY companyID_fk (companyID),
+  CONSTRAINT companyID_fk FOREIGN KEY (companyID) REFERENCES company (companyID) ON DELETE CASCADE
 );

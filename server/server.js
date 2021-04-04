@@ -46,6 +46,13 @@ app.get('/getuserfeedback', (req, res) => {
 	});
 });
 
+// GET COMPANY DATA INFORMATION
+app.get('/getcompany', (req, res) => {
+	db.select('*').from('company').then(data => {
+		res.send(data);
+	});
+});
+
 
 // USER SIGN-IN
 app.post("/signin", (req, res) => {
@@ -224,6 +231,55 @@ app.put("/edit", async (req, res) => {
 	})
 });
 
+
+// DELETE ACCOUNT
+app.delete("/delete", async (req, res) => {
+	const { 
+		userName
+	} = req.body;
+	db('user')
+	.where('userName', userName)
+	.del()
+	.then(result => {
+		console.log(`${userName} account deleted`);
+		res.sendStatus(200);
+	})	
+	.catch(err => {
+		console.log(err);
+		res.status(400).json('Something is wrong.');
+	});
+});
+
+
+// ADS
+app.post("/ads", async (req, res) => {
+	db.select('companyID').from('company')
+	.where('coName', '=', req.body.coName)
+	.then(async data => {
+		if (data) {
+			let companyID = data[0].companyID;
+			await db.insert(
+			{
+					companyID: companyID,
+					paymentAmount: 0
+			})
+			.into('ads')
+			.then(data => {
+				res.json(data);
+				console.log("Ad added to the database.");
+			})
+			.catch(err => {
+				console.log(err);
+				res.status(400).json('Something is wrong.');
+			});
+		} else {
+			console.log('Company doesn\'t exist');
+		}
+	});
+});
+
+
+// LISTEN PORT
 app.listen(PORT, () => {
 	console.log(`App running on port ${PORT}`);
 });
