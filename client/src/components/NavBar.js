@@ -316,6 +316,36 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 		opacityOff();
 	}
 
+
+	/* HANDLING DELETE ACCOUNT */
+	const onSubmitDelete = async (e) => {
+		e.preventDefault();
+		let confirmation = window.confirm("Are you sure you want to delete your account?");
+		if (confirmation) {
+			console.log("--- SUBMITTING DELETE PROFILE FORM ---");
+			const res = await fetch("http://localhost:3001/delete", {
+				method: 'delete',
+				headers: {'Content-Type': 'application/json; charset=utf-8'},
+				body: JSON.stringify({
+					userName: user.userName,
+				}), 
+			});
+			console.log(res)
+			if (res.status === 400) {
+				alert('Unable to delete!');
+				openEditModal();
+			} else {
+				alert('User account deleted!');
+				closeEditModal();
+				onSignOut();
+			}
+			res.text();
+		} else {
+			console.log("### SOMETHING IS WRONG ###");
+			openEditModal();
+		}
+	};
+
 	
 	// GENERAL FUNCTIONS
 	const opacityOn = () => {
@@ -662,6 +692,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 						>Edit Profile</button>
 					</form>
 					<hr style={{border: "1px solid whitesmoke"}}/>
+					<button className="signinreg__submit" onClick={ onSubmitDelete }>Delete Account?</button>
 					<button className="signinreg__submit" onClick={ closeEditModal }>Back to Home</button>
 				</div>
 			</div>
