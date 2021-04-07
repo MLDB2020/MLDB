@@ -27,7 +27,7 @@ signInRouter.post("/", (req, res) => {
 			}
 		})
 		.catch(err => {
-			res.send("Username does not exist.");
+			console.log("Username does not exist.");
 			res.status(400).json("Username does not exist.");
 		});
 });
