@@ -122,7 +122,7 @@ function Footer({ isSignedIn, user }) {
 	const onSubmitFeedback = async (e) => {
 		e.preventDefault();
 		if (feedback.firstVisit && feedback.satisfied && feedback.easyToNavigate && feedback.likelihoodToReturn) {
-			const res = await fetch("http://localhost:3001/userfeedback", {
+			const res = await fetch("http://localhost:3001/feedback", {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
@@ -149,6 +149,7 @@ function Footer({ isSignedIn, user }) {
 		}
 	};
 
+	
 	return (
 		<div>
 			<div className="footer__container" id="footer">
