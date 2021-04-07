@@ -145,7 +145,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 		const isValid = validateReg();
 		if (isValid) {
 			console.log("--- SUBMITTING REGISTER FORM ---");
-			const res = await fetch("http://localhost:3001/register", {
+			const res = await fetch("http://localhost:3001/users", {
 				method: 'post',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
@@ -263,7 +263,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 		const isValid = validateEdit();
 		if (isValid) {
 			console.log("--- SUBMITTING EDIT PROFILE FORM ---");
-			const res = await fetch("http://localhost:3001/edit", {
+			const res = await fetch("http://localhost:3001/users", {
 				method: 'put',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
@@ -323,7 +323,7 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 		let confirmation = window.confirm("Are you sure you want to delete your account?");
 		if (confirmation) {
 			console.log("--- SUBMITTING DELETE PROFILE FORM ---");
-			const res = await fetch("http://localhost:3001/delete", {
+			const res = await fetch("http://localhost:3001/users", {
 				method: 'delete',
 				headers: {'Content-Type': 'application/json; charset=utf-8'},
 				body: JSON.stringify({
@@ -341,7 +341,6 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 			}
 			res.text();
 		} else {
-			console.log("### SOMETHING IS WRONG ###");
 			openEditModal();
 		}
 	};

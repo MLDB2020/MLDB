@@ -29,7 +29,7 @@ function App() {
   const [ companies, setCompanies ] = useState([]);
   
   const getCompanies = async () => {
-    const res = await fetch("http://localhost:3001/getcompany");
+    const res = await fetch("http://localhost:3001/ads");
     const data = await res.json(); 
     setCompanies(data);
     console.log(data);
