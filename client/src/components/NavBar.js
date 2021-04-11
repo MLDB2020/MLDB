@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import validator from 'validator';
 import MLDB_logo from '../MLDB_logo.png';
 
-function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
+function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser, resetUser, onOpacity }) {
 
 	/* HANDLING SIGN IN */
 	const [ signIn, setSignIn ] = useState({
@@ -46,17 +46,9 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 			});
 			const data = await res.json();
 			if (data.userID) {
-				alert('Sucessful login');
+				alert('Successful login');
 				setUser({
-					firstName: data.firstName,
-					lastName: data.lastName,
-					email: data.email,
-					userName: data.userName,
-					password: data.password,
-					street: data.street,
-					city: data.city,
-					state: data.state,
-					zip: data.zipCode
+					...data
 				});
 				setIsSignedIn(true);
 				e.target.reset();
@@ -90,12 +82,12 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 	const openSignInModal = () => {
 		setSignInDisplay("flex");
 		setRegisterDisplay("none");
-		opacityOn();
+		onOpacity(true);
 	}
 
 	const closeSignInModal = () => {
 		setSignInDisplay("none");
-		opacityOff();
+		onOpacity(false);
 	}
 
 
@@ -204,12 +196,12 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 	const openRegisterModal = () => {
 		setRegisterDisplay("flex");
 		setSignInDisplay("none");
-		opacityOn();
+		onOpacity(true);
 	}
 
 	const closeRegisterModal = () => {
 		setRegisterDisplay("none");
-		opacityOff();
+		onOpacity(false);
 	}
 
 
@@ -308,12 +300,12 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 
 	const openEditModal = () => {
 		setEditUserDisplay("flex");
-		opacityOn();
+		onOpacity(true);
 	}
 
 	const closeEditModal = () => {
 		setEditUserDisplay("none");
-		opacityOff();
+		onOpacity(false);
 	}
 
 
@@ -343,40 +335,6 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 		} else {
 			openEditModal();
 		}
-	};
-
-	
-	// GENERAL FUNCTIONS
-	const opacityOn = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "10%";
-		movies.style.opacity = "10%";
-		footer.style.opacity = "10%";
-	};
-
-	const opacityOff = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "100%";
-		movies.style.opacity = "100%";
-		footer.style.opacity = "100%";
-	};
-
-	const resetUser = () => {
-		setUser({
-			firstName: "",
-			lastName: "",
-			email: "",
-			userName: "",
-			password: "",
-			street: "",
-			city: "",
-			state: "",
-			zip: "",
-		});
 	};
 
 
@@ -670,13 +628,13 @@ function NavBar({ onSearch, isSignedIn, setIsSignedIn, user, setUser }) {
 						<input 
 							className={ editUser.zipError === null ? "" : "signinreg__error" }
 							type="text" 
-							name="zip"
+							name="zipCode"
 							placeholder="Zip" 
-							value={ user.zip }
+							value={ user.zipCode }
 							onChange={ (e) => {
 								setUser({ 
 									...user,
-									zip: e.target.value,
+									zipCode: e.target.value,
 								});
 								setEditUser({
 									...editUser,

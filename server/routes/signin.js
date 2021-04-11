@@ -10,7 +10,6 @@ signInRouter.post("/", (req, res) => {
 	mysql.select('userName', 'password').from('user')
 		.where('userName', '=', userName)
 		.then(async data => {
-			//const isValid = bcrypt.compareSync(password, data[0].password);
 			const isValid = password === data[0].password;
 			if (isValid) {
 				try {
