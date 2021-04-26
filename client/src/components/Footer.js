@@ -1,27 +1,7 @@
 import React, { useState } from 'react'
 
-function Footer({ isSignedIn, user }) {
+function Footer({ isSignedIn, user, onOpacity }) {
 	const year = new Date().getFullYear();
-
-	// GENERAL FUNCTIONS
-	const opacityOn = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "10%";
-		movies.style.opacity = "10%";
-		footer.style.opacity = "10%";
-	}
-
-	const opacityOff = () => {
-		let nav = document.getElementById("nav");
-		let movies = document.getElementById("movies");
-		let footer = document.getElementById("footer");
-		nav.style.opacity = "100%";
-		movies.style.opacity = "100%";
-		footer.style.opacity = "100%";
-	}
-
 
 	/* HANDLING CUSTOMER SUPPORT */
 	const [ customerSupport, setCustomerSupport ] = useState({
@@ -32,12 +12,12 @@ function Footer({ isSignedIn, user }) {
 
 	const openCustomerSupportModal = () => {
 		setCustomerSupportDisplay("flex");
-		opacityOn();
+		onOpacity(true);
 	}
 
 	const closeCustomerSupportModal = () => {
 		setCustomerSupportDisplay("none");
-		opacityOff();
+		onOpacity(false);
 	}
 
 	const resetCustomerSupport = () => {
@@ -50,7 +30,6 @@ function Footer({ isSignedIn, user }) {
 	const validateCustomerSupport = () => {
 		let messageError = customerSupport.message.length < 1 ?
 			"message field is empty" : null;
-		
 		if (messageError) {
 			setCustomerSupport({
 				...customerSupport,
@@ -101,12 +80,12 @@ function Footer({ isSignedIn, user }) {
 
 	const openFeedbackModal = () => {
 		setFeedbackDisplay("flex");
-		opacityOn();
+		onOpacity(true);
 	}
 
 	const closeFeedbackModal = () => {
 		setFeedbackDisplay("none");
-		opacityOff();
+		onOpacity(false);
 	}
 
 	const resetFeedback = () => {
